@@ -6,7 +6,7 @@ export type MoneyData = {
 };
 
 export function moneySetup() {
-  if (world.getDynamicProperty("ess:money")) {
+  if (!world.getDynamicProperty("ess:money")) {
     world.setDynamicProperty("ess:money", JSON.stringify([]));
   }
 }
@@ -50,16 +50,18 @@ export class Money {
     this.set(playerNameTag, current + amount);
   }
 
-  /** Remove player money */
-  remove(playerNameTag: string, amount: number) {
+  /**
+   * Remove player money 
+   * @returns true if cancel (player doesn't have enough money)
+   */
+  remove(playerNameTag: string, amount: number): boolean {
     const current = this.get(playerNameTag);
 
-    if (current - amount >= 0) {
-      this.set(playerNameTag, current - amount);
-    } else {
-      world.getPlayers({ name: playerNameTag }).forEach((player) =>
-        player.sendMessage("§cNot enough money!")
-      );
+    if (current < amount) {
+      return true;
     }
+
+    this.set(playerNameTag, current - amount);
+    return false; 
   }
 }

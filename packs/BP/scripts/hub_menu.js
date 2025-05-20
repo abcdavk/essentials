@@ -1,5 +1,6 @@
 import { ActionFormData } from "@minecraft/server-ui";
 import { jobMenuMainUI } from "./essentials/jobMenu/form_ui";
+import { shopCategory } from "./essentials/shop/main";
 export function hubMenu(player, itemStack) {
     if (itemStack.typeId === "minecraft:compass") {
         let form = new ActionFormData()
@@ -9,14 +10,26 @@ export function hubMenu(player, itemStack) {
             .button('', 'textures/ui/new_ui/M3')
             .button('', 'textures/ui/new_ui/M4');
         form.show(player).then(res => {
-            if (res.selection === 2) {
+            if (res.selection === 0)
+                shopMenu(player);
+            if (res.selection === 2)
                 jobMenuMainUI(player);
-            }
-            if (res.selection === 3) {
+            if (res.selection === 3)
                 hubSettings(player);
-            }
         });
     }
+}
+function shopMenu(player) {
+    let form = new ActionFormData()
+        .title('§f§2§0§r§l§0Shop')
+        .button('', 'textures/ui/new_ui/shop/S1')
+        .button('', 'textures/ui/new_ui/shop/S2')
+        .button('', 'textures/ui/new_ui/shop/S3')
+        .button('', 'textures/ui/new_ui/shop/S4');
+    form.show(player).then(res => {
+        if (res.selection === 0)
+            shopCategory(player);
+    });
 }
 function hubSettings(player) {
     let form = new ActionFormData()

@@ -224,6 +224,59 @@
                 }
             },
             {
+                "shop@global.title_binding": {
+                    "$form_size": [
+                        400,
+                        300
+                    ],
+                    "$scrolling_content": "server_form.shop_buttons_grid",
+                    
+                    "$CLOSE_BUTTON_size": [
+                        "100%",
+                        18
+                    ],
+
+                    "$HEADER_TEMPLATE_close_button_control": "global.empty_panel",
+                    "$FORM_TEMPLATE_sub_content_control": "starlib_pkg_screen_common.async_close_button",
+                    "$CLOSE_BUTTON_text_enabled": true,
+                    "$CLOSE_BUTTON_default_control": "server_form.close_button",
+                    "$CLOSE_BUTTON_hover_control": "server_form.hover",
+                    "$CLOSE_BUTTON_pressed_control": "server_form.hover",
+                    "$CLOSE_BUTTON_text_offset": [
+                        0,
+                        -2
+                    ],
+
+                    "$HEADER_TEMPLATE_style_control": "server_form.header",
+                    "$CONTENT_between_contents_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$CUBIC_BUTTON_image_size": [
+                        "75%",
+                        "75%"
+                    ],
+                    "$CUBIC_BUTTON_bottom_padding_size": [
+                        0,
+                        2
+                    ],
+                    "$CUBIC_BUTTON_content_size": [
+                        "100%-10px",
+                        "100%-10px"
+                    ],
+                    "$key": "§f§2§2",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "$grid_item": "server_form.grid_button",
+                    // "$BUTTON_STYLE_default_texture": "textures/ui/button_hover",
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
+                }
+            },
+            {
                 "main_menu@global.title_binding": {
                     "$form_size": [
                         190,
@@ -400,6 +453,18 @@
         "$GRID_ITEM_size": [
             "50%",
             95
+        ]
+    },
+    "shop_buttons_grid@global.grid": {
+        "$grid_item": "server_form.shop_grid"
+    },
+    "shop_grid@starlib_pkg_button_templates.grid_item_template": {
+        "anchor_to": "center",
+        "anchor_from": "center",
+        "$GRID_ITEM_root_control": "starlib_pkg_button_templates.cubic_button",
+        "$GRID_ITEM_size": [
+            "16.6%",
+            80
         ]
     },
     "header@style.image": {

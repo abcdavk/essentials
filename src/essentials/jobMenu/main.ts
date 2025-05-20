@@ -6,7 +6,7 @@ import { Money } from "../money";
 
 
 export function jobMenuSetup(player: Player) {
-  if (player.hasTag("job:setup")) {
+  if (!player.hasTag("job:setup")) {
     player.addTag("job:setup");
 
     new Money().init(player.nameTag);
@@ -162,6 +162,7 @@ export function jobMenuKillHandler(damageSource: EntityDamageSource, entity: Ent
 
 export function jobMenuBlockBreakHandler(player: Player, blockPerm: BlockPermutation) {
     let playerJob = player.getDynamicProperty("job:currentJob") as number;
+    if (playerJob === undefined) return;
     let jobTitle = allJobs[playerJob].title;
     let jobLevel = player.getDynamicProperty(`job:${jobTitle}_level`) as number;
 

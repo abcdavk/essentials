@@ -1,8 +1,8 @@
 import { system, world } from "@minecraft/server";
-import { ActionFormData } from "@minecraft/server-ui";
 import { hubMenu } from "./hub_menu";
 import { jobMenuBlockBreakHandler, jobMenuFishingHandler, jobMenuInterval, jobMenuKillHandler, jobMenuSetup } from "./essentials/jobMenu/main";
 import { moneySetup } from "./essentials/money";
+import { adminMenuInterval, adminMenu } from "./essentials/adminMenu/main";
 
 world.afterEvents.worldLoad.subscribe(() => {
   moneySetup();
@@ -15,10 +15,11 @@ world.afterEvents.playerSpawn.subscribe(({
 });
 
 world.afterEvents.itemUse.subscribe(({
-  itemStack,
-  source: player 
+  source: player,
+  itemStack
 }) => {
   hubMenu(player, itemStack);
+  adminMenu(player, itemStack);
 });
 
 world.afterEvents.playerBreakBlock.subscribe(({
@@ -41,6 +42,8 @@ world.afterEvents.entityDie.subscribe(({
 
 system.runInterval(() => {
   world.getPlayers().forEach(player => {
+    const dimension = player.dimension;
     jobMenuInterval(player);
+    adminMenuInterval(dimension);
   });
 });

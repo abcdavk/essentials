@@ -1,6 +1,6 @@
 import { Block, Dimension, Player, world } from "@minecraft/server";
 import { Protection } from "./classes";
-import { AllowList, ProtectionData } from "./interfaces";
+import { AllowList, ProtectionData } from "../../interfaces";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 
 export function handleSettingUI(player: Player, block: Block, dimension: Dimension, protectionData: ProtectionData) {

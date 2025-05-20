@@ -3,7 +3,7 @@ import { calculateNextValue } from "../../utils";
 import { allJobs, fishingLoots } from "./config";
 import { Money } from "../money";
 export function jobMenuSetup(player) {
-    if (player.hasTag("job:setup")) {
+    if (!player.hasTag("job:setup")) {
         player.addTag("job:setup");
         new Money().init(player.nameTag);
         player.setDynamicProperty("job:currentJob");
@@ -117,6 +117,8 @@ export function jobMenuKillHandler(damageSource, entity) {
 }
 export function jobMenuBlockBreakHandler(player, blockPerm) {
     let playerJob = player.getDynamicProperty("job:currentJob");
+    if (playerJob === undefined)
+        return;
     let jobTitle = allJobs[playerJob].title;
     let jobLevel = player.getDynamicProperty(`job:${jobTitle}_level`);
     let job = allJobs[playerJob];

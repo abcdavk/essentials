@@ -1,6 +1,6 @@
 import { Block, Dimension, Entity, EntityComponentTypes, Player, system, Vector3, world } from "@minecraft/server";
 import { handleBreakProtectionBlock, handleInteractProtectionBlock, handlePlaceProtectionBlock } from "./protection_block";
-import { AllowList, ExpiredDate, ProtectionData } from "./interfaces";
+import { AllowList, ExpiredDate, ProtectionData } from "../../interfaces";
 import { ActionFormData } from "@minecraft/server-ui";
 import { Expired, Protection } from "./classes";
 

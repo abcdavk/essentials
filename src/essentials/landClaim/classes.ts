@@ -1,5 +1,5 @@
 import { world, Player, Block } from "@minecraft/server";
-import { ExpiredDate, ProtectionData } from "./interfaces";
+import { ExpiredDate, ProtectionData } from "../../interfaces";
 export class Expired {
   private key = "lc:expired";
 
