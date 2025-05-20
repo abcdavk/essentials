@@ -1,9 +1,9 @@
 import { world } from "@minecraft/server";
-import { Protection } from "./landClaim";
+import { Protection } from "./classes";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 export function handleSettingUI(player, block, dimension, protectionData) {
     let form = new ModalFormData()
-        .title("§f§0§1§r§l§0Settings")
+        .title("§f§0§1§r§l§0Rules")
         .textField("Land Name:", "Land Name", { defaultValue: protectionData.settings.plotName })
         .toggle("Show Boundaries", { defaultValue: protectionData.settings.showBoundaries, tooltip: "When enable, will display particle animation around the area." })
         .toggle("Anti Hostile", { defaultValue: protectionData.settings.anti_hostile, tooltip: "When enable, hostiles in the area will be removed." })
@@ -34,7 +34,7 @@ export function handleAddFriendUI(player, block, dimension, protectionData) {
             playerList.push(p.nameTag);
     });
     let form = new ModalFormData()
-        .title("Add Friend")
+        .title("Invite")
         .dropdown("Select Online Player:", playerList, { defaultValueIndex: 0 })
         .textField("Or type player username", "Type here", { tooltip: "Type manually if the player is not in the dropdown/offline" });
     form.show(player).then(res => {
@@ -79,7 +79,7 @@ export function handleAddFriendUI(player, block, dimension, protectionData) {
 }
 export function handleShowAllFriendUI(player, block, dimension, protectionData) {
     let form = new ActionFormData()
-        .title("§f§0§1§r§l§0Friend List")
+        .title("§f§0§1§r§l§0Team")
         .body("List of all friends.");
     let friendList = protectionData.allowList;
     // let friendCount = 0;
@@ -96,7 +96,7 @@ export function handleShowAllFriendUI(player, block, dimension, protectionData) 
 function handleFriendSettingUI(player, block, dimension, protectionData, allowList) {
     let { allow_place_block, allow_break_block, allow_interact_with_block, allow_tnt, allow_button, allow_lever, allow_interact_armor_stand, allow_attack_animals, allow_attack_players } = allowList;
     let form = new ModalFormData()
-        .title(allowList.nameTag + " Settings")
+        .title(allowList.nameTag + " Rules")
         .toggle("Allow Place Block", { defaultValue: allow_place_block })
         .toggle("Allow Break Block", { defaultValue: allow_break_block })
         .toggle("Allow Interact with Block", { defaultValue: allow_interact_with_block })
@@ -131,7 +131,7 @@ function handleFriendSettingUI(player, block, dimension, protectionData, allowLi
 }
 export function handleRemoveFriendUI(player, block, dimension, protectionData) {
     let form = new ActionFormData()
-        .title("§f§0§1§r§l§0Remove Friend")
+        .title("§f§0§1§r§l§0Kick")
         .body("Select to remove.");
     let friendList = protectionData.allowList;
     for (let i = 0; i < friendList.length; i++) {
@@ -146,7 +146,7 @@ export function handleRemoveFriendUI(player, block, dimension, protectionData) {
 function handleRemoveConfirmationUI(player, block, dimension, protectionData, allowList) {
     let friendName = allowList.nameTag;
     let form = new ActionFormData()
-        .title("§f§0§1§r§l§0Remove Friend")
+        .title("§f§0§1§r§l§0Kick")
         .body(`Do you really want to remove §b${friendName}§r from the friend list?\n\n\n\n\n\n\n\n\n`)
         .button("§fYes")
         .button("Cancel");
