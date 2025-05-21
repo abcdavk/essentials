@@ -105,16 +105,16 @@ function adminMenuRemoveMoney(player: Player) {
         const [ dropdown, typeName, amount ] = res.formValues as [ number, string,  string ];
         if (amount === undefined) return;
         if (dropdown !== 0) {
-          const isCancelled = new Money().remove(playerList[dropdown], parseFloat(amount));
-          if (!isCancelled) {
+          const isCanceled = new Money().remove(playerList[dropdown], parseFloat(amount));
+          if (!isCanceled) {
             player.sendMessage(`Remove §a${amount}§r money to §b${playerList[dropdown]}`);
           } else {
             player.sendMessage(`§c${playerList[dropdown]} doesn't have enough money`);
           }
         }
         if (typeName !== "") {
-          const isCancelled = new Money().remove(typeName, parseFloat(amount));
-          if (!isCancelled) {
+          const isCanceled = new Money().remove(typeName, parseFloat(amount));
+          if (!isCanceled) {
             player.sendMessage(`Remove §a${amount}§r money to §b${typeName}`);
           } else {
             player.sendMessage(`§c${typeName} doesn't have enough money`);

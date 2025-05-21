@@ -40,7 +40,7 @@ export class Money {
     const worldMoneyData = this.getWorldMoneyData()
       .filter((data) => data.nameTag !== playerNameTag); 
 
-    worldMoneyData.push({ nameTag: playerNameTag, value: parseFloat(newValue.toFixed(2)) });
+    worldMoneyData.push({ nameTag: playerNameTag, value: parseFloat(newValue.toFixed(4)) });
     world.setDynamicProperty(this.moneyProperty, JSON.stringify(worldMoneyData));
   }
 

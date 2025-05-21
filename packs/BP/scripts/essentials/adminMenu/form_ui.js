@@ -104,8 +104,8 @@ function adminMenuRemoveMoney(player) {
                 if (amount === undefined)
                     return;
                 if (dropdown !== 0) {
-                    const isCancelled = new Money().remove(playerList[dropdown], parseFloat(amount));
-                    if (!isCancelled) {
+                    const isCanceled = new Money().remove(playerList[dropdown], parseFloat(amount));
+                    if (!isCanceled) {
                         player.sendMessage(`Remove §a${amount}§r money to §b${playerList[dropdown]}`);
                     }
                     else {
@@ -113,8 +113,8 @@ function adminMenuRemoveMoney(player) {
                     }
                 }
                 if (typeName !== "") {
-                    const isCancelled = new Money().remove(typeName, parseFloat(amount));
-                    if (!isCancelled) {
+                    const isCanceled = new Money().remove(typeName, parseFloat(amount));
+                    if (!isCanceled) {
                         player.sendMessage(`Remove §a${amount}§r money to §b${typeName}`);
                     }
                     else {

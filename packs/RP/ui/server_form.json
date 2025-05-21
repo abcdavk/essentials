@@ -52,7 +52,7 @@
 
         "$COMMON_BUTTON_panel_control": "starlib_pkg_button_common.disabled_variable_button_panel",
         "$BUTTON_STYLE_disabled_variable_key": "§m§0§0",
-        "$BUTTON_STYLE_disabled_variable_texture": "textures/ui/button_disabled",
+        "$BUTTON_STYLE_disabled_variable_texture": "textures/ui/button_hover",
         
         "$forms_holder_controls": [
             // {
@@ -237,6 +237,7 @@
                     ],
 
                     "$HEADER_TEMPLATE_close_button_control": "global.empty_panel",
+                    "$HEADER_TEMPLATE_title_control": "server_form.shop_title",
                     "$FORM_TEMPLATE_sub_content_control": "starlib_pkg_screen_common.async_close_button",
                     "$CLOSE_BUTTON_text_enabled": true,
                     "$CLOSE_BUTTON_default_control": "server_form.close_button",
@@ -247,7 +248,7 @@
                         -2
                     ],
 
-                    "$HEADER_TEMPLATE_style_control": "server_form.header",
+                    "$HEADER_TEMPLATE_style_control": "server_form.header_shop",
                     "$CONTENT_between_contents_padding_size": [
                         0,
                         0
@@ -274,6 +275,47 @@
                     // "$BUTTON_STYLE_default_texture": "textures/ui/button_hover",
                     "$COMMON_BUTTON_hover_control": "server_form.hover",
                     "$COMMON_BUTTON_pressed_control": "server_form.hover"
+                }
+            },
+            {
+                "title_preview@global.title_binding": {
+                    "$form_size": [
+                        240,
+                        200
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.title_preview_header",
+                    "$HEADER_TEMPLATE_title_control": "server_form.title_preview_title",
+                    "$FORM_TEMPLATE_background_control": "server_form.title_preview_background",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_title_preview_text",
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+                    "$CONTENT_between_contents_padding_size": [
+                        10,
+                        0
+                    ],
+                    "$COMMON_PAPERDOLL_size": [
+                        40,
+                        "100%"
+                    ],
+                    "$ROTATION_AREA_size": [
+                        0,
+                        0
+                    ],
+                    "$PAPERDOLL_offset": [
+                        120,
+                        -30
+                    ],
+                    "$CONTENT_enable_paperdoll": true,
+                    "$key": "§f§3§0",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "offset": [
+                        -20,
+                        0
+                    ]
                 }
             },
             {
@@ -470,6 +512,43 @@
     "header@style.image": {
         "texture": "textures/ui/header"
     },
+    "header_shop@style.image": {
+        "texture": "textures/ui/header",
+        "size": [
+            "100%",
+            32
+        ]
+    },
+    "title_preview_header@style.image": {
+        "anchor_to": "top_right",
+        "anchor_from": "top_right",
+        "texture": "textures/ui/header",
+        "size": [
+            190,
+            "default"
+        ]
+    },
+    "title_preview_title@starlib_pkg_screen_common.title_template": {
+        "offset": [
+            60,
+            10
+        ],
+        "anchor_to": "top_left",
+        "anchor_from": "top_left",
+        "text_alignment": "left"
+    },
+    "title_preview_background@style.image": {
+        "size": [
+            190,
+            "100%"
+        ],
+        "anchor_to": "top_right",
+        "anchor_from": "top_right"
+
+    },
+    "shop_title@starlib_pkg_screen_common.title_template": {
+        "text_alignment": "left"
+    },
     "header_blue@style.image": {
         "texture": "textures/ui/header_blue"
     },
@@ -502,5 +581,19 @@
             "100% - 2px",
             "default"
         ]
+    },
+    "form_title_preview_text@starlib_pkg_screen_common.form_text_template": {
+        "size": [
+            "100% - 2px",
+            "default"
+        ],
+        "offset": [
+            0,
+            20
+        ],
+        "anchor_to": "top_center",
+        "anchor_from": "top_center",
+        "text_alignment": "center",
+        "layer": 1
     }
 }

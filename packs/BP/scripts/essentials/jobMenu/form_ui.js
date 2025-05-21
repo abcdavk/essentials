@@ -62,7 +62,7 @@ function showAllJobs(player) {
         .button("", "textures/ui/new_ui/jobs/J2")
         .button("", "textures/ui/new_ui/jobs/J3")
         .button("", "textures/ui/new_ui/jobs/J4")
-        .button("", "textures/ui/new_ui/jobs/wood")
+        .button("", "textures/ui/new_ui/jobs/J6")
         .button("", "textures/ui/new_ui/jobs/J5");
     form.show(player).then(res => {
         if (res.canceled)

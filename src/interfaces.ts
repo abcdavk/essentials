@@ -53,10 +53,22 @@ export type ExpiredDate = {
 
 // Shop interface
 export type Shop = {
+  type: string,
   category: string;
-  itemList: {
-    typeId: string;
-    price: number,
-    texture: string;
-  }[]
+  itemList?: ShopItem[];
+  titleList?: Title[]
+}
+
+export type ShopItem = {
+  typeId: string;
+  price: number,
+  texture: string;
+  per?: number
+}
+
+export type Title = {
+  price: number,
+  color: string,
+  name: string,
+  texture: string
 }
