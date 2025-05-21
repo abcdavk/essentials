@@ -16,51 +16,59 @@ export function playerTitleSetup(player: Player) {
 type TitleDataInterface = {
   nameTag: string;
   enabled: string;
-  titleList: string[]
-}
+  titleList: string[];
+};
 
 export class TitleData {
-  private titleProperty = "ess:title"
+  private titleProperty = "ess:title";
 
   private getTitlesData(): TitleDataInterface[] {
     const rawData = world.getDynamicProperty(this.titleProperty) as string;
-    return JSON.parse(rawData) as TitleDataInterface[];
+    try {
+      return JSON.parse(rawData) as TitleDataInterface[];
+    } catch {
+      return [];
+    }
+  }
+
+  private saveTitlesData(data: TitleDataInterface[]) {
+    world.setDynamicProperty(this.titleProperty, JSON.stringify(data));
   }
 
   init(playerNameTag: string) {
-    const worldTitlesData = this.getTitlesData();
-
-    if (worldTitlesData.find((data) => data.nameTag === playerNameTag)) return;
-
-    worldTitlesData.push({ nameTag: playerNameTag, enabled: "", titleList: [] });
-    world.setDynamicProperty(this.titleProperty, JSON.stringify(worldTitlesData));
+    const data = this.getTitlesData();
+    if (data.find((d) => d.nameTag === playerNameTag)) return;
+    data.push({ nameTag: playerNameTag, enabled: "", titleList: [] });
+    this.saveTitlesData(data);
   }
 
   get(playerNameTag: string): string {
-    const player = this.getTitlesData().find((data) => data.nameTag === playerNameTag);
-    return player?.enabled ?? "";
+    const playerData = this.getTitlesData().find((d) => d.nameTag === playerNameTag);
+    return playerData?.enabled ?? "";
   }
 
   getArray(playerNameTag: string): string[] {
-    let worldTitlesData = this.getTitlesData();
-    worldTitlesData.filter((data) => data.nameTag === playerNameTag); 
-    return worldTitlesData[0].titleList
+    const playerData = this.getTitlesData().find((d) => d.nameTag === playerNameTag);
+    return playerData?.titleList ?? [];
   }
 
   set(playerNameTag: string, titleToSet: string) {
-    let worldTitlesData = this.getTitlesData();
-    worldTitlesData.filter((data) => data.nameTag !== playerNameTag); 
-    
-    worldTitlesData.push({ nameTag: playerNameTag, enabled: titleToSet, titleList: this.getArray(playerNameTag) });
-    world.setDynamicProperty(this.titleProperty, JSON.stringify(worldTitlesData));
+    const data = this.getTitlesData();
+    const index = data.findIndex((d) => d.nameTag === playerNameTag);
+    if (index === -1) return;
+
+    data[index].enabled = titleToSet;
+    this.saveTitlesData(data);
   }
 
   add(playerNameTag: string, titleToAdd: string) {
-    let titleArray = this.getArray(playerNameTag);
-    let worldTitlesData = this.getTitlesData();
-    worldTitlesData.filter((data) => data.nameTag !== playerNameTag); 
-    titleArray.push(titleToAdd);
-    worldTitlesData.push({ nameTag: playerNameTag, enabled: this.get(playerNameTag), titleList: titleArray });
-    world.setDynamicProperty(this.titleProperty, JSON.stringify(worldTitlesData));
+    const data = this.getTitlesData();
+    const index = data.findIndex((d) => d.nameTag === playerNameTag);
+    if (index === -1) return;
+
+    if (!data[index].titleList.includes(titleToAdd)) {
+      data[index].titleList.push(titleToAdd);
+      this.saveTitlesData(data);
+    }
   }
 }

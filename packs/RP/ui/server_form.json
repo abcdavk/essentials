@@ -303,10 +303,52 @@
                     ],
                     "$PAPERDOLL_offset": [
                         120,
-                        -30
+                        -40
                     ],
                     "$CONTENT_enable_paperdoll": true,
                     "$key": "§f§3§0",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "offset": [
+                        -20,
+                        0
+                    ]
+                }
+            },
+            {
+                "title_menu@global.title_binding": {
+                    "$form_size": [
+                        280,
+                        200
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.title_menu_header",
+                    "$HEADER_TEMPLATE_title_control": "server_form.title_menu_title",
+                    "$FORM_TEMPLATE_background_control": "server_form.title_menu_background",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_title_menu_text",
+                    
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+                    "$CONTENT_between_contents_padding_size": [
+                        100,
+                        0
+                    ],
+                    "$COMMON_PAPERDOLL_size": [
+                        60,
+                        "100%"
+                    ],
+                    "$ROTATION_AREA_size": [
+                        0,
+                        0
+                    ],
+                    "$PAPERDOLL_offset": [
+                        68,
+                        -20
+                    ],
+                    "$CONTENT_enable_paperdoll": true,
+                    "$key": "§f§3§1",
                     "$control": "starlib_pkg_screen_template.form_template",
                     "size": [
                         "100%c",
@@ -589,11 +631,66 @@
         ],
         "offset": [
             0,
-            20
+            10
         ],
         "anchor_to": "top_center",
         "anchor_from": "top_center",
         "text_alignment": "center",
         "layer": 1
+    },
+
+
+    "form_title_menu_text@starlib_pkg_screen_common.form_text_template": {
+        "size": [
+            0,
+            0
+        ]
+    },
+
+    "title_menu_header@style.image": {
+        "anchor_to": "top_right",
+        "anchor_from": "top_right",
+        "texture": "textures/ui/header",
+        "size": [
+            240,
+            "default"
+        ]
+    },
+    "title_menu_title@starlib_pkg_screen_common.title_template": {
+        "offset": [
+            55,
+            10
+        ],
+        "size": [
+            "100%",
+            "100%"
+        ],
+        "anchor_to": "top_left",
+        "anchor_from": "top_left",
+        "text_alignment": "left",
+        "controls": [
+            {
+                "body@style.label": {
+                    "type": "label",
+                    "anchor_from": "top_center",
+                    "anchor_to": "top_center",
+                    "layer": 31,
+                    "text": "#form_text",
+                    "text_alignment": "center",
+                    "offset": [
+                        -90,
+                        50
+                    ]
+                }
+            }
+        ]
+    },
+    "title_menu_background@style.image": {
+        "size": [
+            240,
+            "100%"
+        ],
+        "anchor_to": "top_right",
+        "anchor_from": "top_right"
     }
 }

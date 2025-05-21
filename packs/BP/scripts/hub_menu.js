@@ -1,6 +1,7 @@
 import { ActionFormData } from "@minecraft/server-ui";
 import { jobMenuMainUI } from "./essentials/jobMenu/form_ui";
 import { shopCategory } from "./essentials/shop/main";
+import { changeTitleMenu } from "./essentials/title/form_ui";
 export function hubMenu(player, itemStack) {
     if (itemStack.typeId === "minecraft:compass") {
         let form = new ActionFormData()
@@ -47,5 +48,7 @@ function hubSettings(player) {
                 player.sendMessage("§aToggle PVP enabled");
             }
         }
+        if (res.selection === 1)
+            changeTitleMenu(player);
     });
 }
