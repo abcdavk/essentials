@@ -4,6 +4,12 @@ export function titleSetup() {
         world.setDynamicProperty("ess:title", JSON.stringify([]));
     }
 }
+export function playerTitleSetup(player) {
+    if (!player.hasTag("ess:title_setup")) {
+        new TitleData().init(player.nameTag);
+        player.addTag("ess:title_setup");
+    }
+}
 export class TitleData {
     constructor() {
         this.titleProperty = "ess:title";

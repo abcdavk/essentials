@@ -2,11 +2,9 @@ import { EntityComponentTypes, system } from "@minecraft/server";
 import { calculateNextValue } from "../../utils";
 import { allJobs, fishingLoots } from "./config";
 import { Money } from "../money";
-import { TitleData } from "../title/main";
 export function jobMenuSetup(player) {
     if (!player.hasTag("job:setup")) {
         player.addTag("job:setup");
-        new TitleData().init(player.nameTag);
         new Money().init(player.nameTag);
         player.setDynamicProperty("job:currentJob");
         allJobs.forEach(job => {

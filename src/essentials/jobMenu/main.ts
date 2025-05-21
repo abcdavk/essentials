@@ -10,7 +10,6 @@ export function jobMenuSetup(player: Player) {
   if (!player.hasTag("job:setup")) {
     player.addTag("job:setup");
 
-    new TitleData().init(player.nameTag);
     new Money().init(player.nameTag);
 
     player.setDynamicProperty("job:currentJob");

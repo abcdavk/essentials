@@ -3,7 +3,7 @@ import { hubMenu } from "./hub_menu";
 import { jobMenuBlockBreakHandler, jobMenuFishingHandler, jobMenuInterval, jobMenuKillHandler, jobMenuSetup } from "./essentials/jobMenu/main";
 import { moneySetup } from "./essentials/money";
 import { adminMenuInterval, adminMenu } from "./essentials/adminMenu/main";
-import { titleSetup } from "./essentials/title/main";
+import { playerTitleSetup, titleSetup } from "./essentials/title/main";
 
 world.afterEvents.worldLoad.subscribe(() => {
   moneySetup();
@@ -13,6 +13,7 @@ world.afterEvents.worldLoad.subscribe(() => {
 world.afterEvents.playerSpawn.subscribe(({
     player
 }) => {
+  playerTitleSetup(player);
   jobMenuSetup(player);
 });
 

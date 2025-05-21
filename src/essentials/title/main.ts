@@ -1,8 +1,15 @@
-import { world } from "@minecraft/server";
+import { Player, world } from "@minecraft/server";
 
 export function titleSetup() {
   if (!world.getDynamicProperty("ess:title")) {
     world.setDynamicProperty("ess:title", JSON.stringify([]));
+  }
+}
+
+export function playerTitleSetup(player: Player) {
+  if (!player.hasTag("ess:title_setup")) {
+    new TitleData().init(player.nameTag);
+    player.addTag("ess:title_setup");
   }
 }
 
