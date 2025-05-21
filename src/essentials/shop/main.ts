@@ -4,6 +4,7 @@ import { itemTypeIdToName } from "../../utils";
 import { shopRegistry } from "./config";
 import { Shop, ShopItem, Title } from "../../interfaces";
 import { Money } from "../money";
+import { TitleData } from "../title/main";
 
 
 
@@ -49,8 +50,10 @@ function handleBuyTitle(player: Player, title: Title) {
     .body(`§l${color}${name} §r${player.nameTag}\n\n\n\n\n\n\n\n\n\n\n\n`)
     .button(`Buy for §l$${formatNumber(price)}`)
   form.show(player).then(res => {
-
-  })
+    if (res.selection === 0) {
+     new TitleData().add(player.nameTag, name);
+    }
+  });
 }
 
 function handleShopList(player: Player, shop: Shop) {

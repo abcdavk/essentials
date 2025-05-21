@@ -3,12 +3,14 @@ import { calculateNextValue } from "../../utils";
 import { BlockOptions, KillEntityOptions } from "../../interfaces"
 import { allJobs, fishingLoots } from "./config";
 import { Money } from "../money";
+import { TitleData } from "../title/main";
 
 
 export function jobMenuSetup(player: Player) {
   if (!player.hasTag("job:setup")) {
     player.addTag("job:setup");
 
+    new TitleData().init(player.nameTag);
     new Money().init(player.nameTag);
 
     player.setDynamicProperty("job:currentJob");

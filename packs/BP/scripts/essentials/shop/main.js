@@ -2,6 +2,7 @@ import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { itemTypeIdToName } from "../../utils";
 import { shopRegistry } from "./config";
 import { Money } from "../money";
+import { TitleData } from "../title/main";
 export function shopCategory(player) {
     let form = new ActionFormData()
         .title('§f§0§1§r§l§0Select Category');
@@ -27,7 +28,7 @@ function handleTitleLevel(player, title) {
         .title(`§f§2§2§r§l§0   Buy ${category}\n   $${new Money().get(player.nameTag)}`);
     for (let i = 0; i < titleList.length; i++) {
         let { name, price, texture } = titleList[i];
-        form.button(`§m§0§0§r${name}\n§a$${price}`, "textures/" + texture);
+        form.button(`§r${name}\n§a$${price}`, "textures/" + texture);
     }
     form.show(player).then(res => {
         if (res.selection === undefined)
@@ -42,6 +43,9 @@ function handleBuyTitle(player, title) {
         .body(`§l${color}${name} §r${player.nameTag}\n\n\n\n\n\n\n\n\n\n\n\n`)
         .button(`Buy for §l$${formatNumber(price)}`);
     form.show(player).then(res => {
+        if (res.selection === 0) {
+            new TitleData().add(player.nameTag, name);
+        }
     });
 }
 function handleShopList(player, shop) {
