@@ -2,6 +2,7 @@ import { ActionFormData } from "@minecraft/server-ui";
 import { jobMenuMainUI } from "./essentials/jobMenu/form_ui";
 import { shopCategory } from "./essentials/shop/main";
 import { changeTitleMenu } from "./essentials/title/form_ui";
+import { auctionHouseMainUI } from "./essentials/auctionHouse/main";
 export function hubMenu(player, itemStack) {
     if (itemStack.typeId === "minecraft:compass") {
         let form = new ActionFormData()
@@ -30,6 +31,8 @@ function shopMenu(player) {
     form.show(player).then(res => {
         if (res.selection === 0)
             shopCategory(player);
+        if (res.selection === 1)
+            auctionHouseMainUI(player);
     });
 }
 function hubSettings(player) {

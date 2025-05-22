@@ -2,12 +2,17 @@ import { system, world } from "@minecraft/server";
 import { hubMenu } from "./hub_menu";
 import { jobMenuBlockBreakHandler, jobMenuFishingHandler, jobMenuInterval, jobMenuKillHandler, jobMenuSetup } from "./essentials/jobMenu/main";
 import { moneySetup } from "./essentials/money";
-import { adminMenuInterval, adminMenu } from "./essentials/adminMenu/main";
-import { playerTitleSetup, titleSetup } from "./essentials/title/main";
+import { adminMenu } from "./essentials/adminMenu/main";
+import { playerTitleSetup, titleOnChat, titleSetup } from "./essentials/title/main";
+import { auctionHouseSetup } from "./essentials/auctionHouse/main";
 
 world.afterEvents.worldLoad.subscribe(() => {
   moneySetup();
   titleSetup();
+});
+
+world.beforeEvents.chatSend.subscribe((data) => {
+  titleOnChat(data);
 });
 
 world.afterEvents.playerSpawn.subscribe(({
@@ -15,7 +20,12 @@ world.afterEvents.playerSpawn.subscribe(({
 }) => {
   playerTitleSetup(player);
   jobMenuSetup(player);
+  auctionHouseSetup(player);
 });
+
+// world.beforeEvents.playerLeave.subscribe(({ player }) => {
+  
+// });
 
 world.afterEvents.itemUse.subscribe(({
   source: player,
@@ -47,6 +57,5 @@ system.runInterval(() => {
   world.getPlayers().forEach(player => {
     const dimension = player.dimension;
     jobMenuInterval(player);
-    adminMenuInterval(dimension);
   });
 });

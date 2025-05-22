@@ -170,10 +170,10 @@ world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
   }
 
   const now = Date.now();
-  const lastUsed = playerCooldowns.get(player.id) ?? 0;
+  const lastUsed = playerCooldowns.get(player.nameTag) ?? 0;
   if (now - lastUsed < 260) return;
 
-  playerCooldowns.set(player.id, now);
+  playerCooldowns.set(player.nameTag, now);
   let isProtectionBlock = block.typeId.includes("lc:protection_block");
   if (isProtectionBlock) {
     system.run(() => handleInteractProtectionBlock(data));

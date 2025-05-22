@@ -1,4 +1,5 @@
 import { world } from "@minecraft/server";
+import { titleRegistry } from "./config";
 export function titleSetup() {
     if (!world.getDynamicProperty("ess:title")) {
         world.setDynamicProperty("ess:title", JSON.stringify([]));
@@ -8,6 +9,15 @@ export function playerTitleSetup(player) {
     if (!player.hasTag("ess:title_setup")) {
         new TitleData().init(player.nameTag);
         player.addTag("ess:title_setup");
+    }
+}
+export function titleOnChat(data) {
+    let { message, sender: player } = data;
+    let titleUsed = new TitleData().get(player.nameTag);
+    if (titleUsed !== "") {
+        data.cancel = true;
+        const color = titleRegistry.filter(title => title.name === titleUsed)[0].color;
+        world.sendMessage(`<§l${color}${titleUsed}§r ${player.nameTag}>§r ${message}`);
     }
 }
 export class TitleData {

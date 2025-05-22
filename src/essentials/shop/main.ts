@@ -1,6 +1,6 @@
 import { Player } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
-import { itemTypeIdToName } from "../../utils";
+import { itemTypeIdToName, formatNumber } from "../../utils";
 import { shopRegistry } from "./config";
 import { Shop, ShopItem, Title } from "../../interfaces";
 import { Money } from "../money";
@@ -21,17 +21,13 @@ export function shopCategory(player: Player) {
   });
 }
 
-function formatNumber(num: number): string {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
 
 function handleTitleLevel(player: Player, title: Shop) {
   const category = title.category;
   const titleList = title.titleList as Title[];
   const ownedTitle = new TitleData().getArray(player.nameTag)
   let form = new ActionFormData()
-    .title(`§f§2§2§r§l§0   Buy ${category}\n   $${new Money().get(player.nameTag)}`)
+    .title(`§f§2§2§r§l§0   Buy ${category}\n   $${formatNumber(new Money().get(player.nameTag))}`)
 
   for (let i = 0; i < titleList.length; i++) {
     let { name, price, texture } = titleList[i];
@@ -69,7 +65,7 @@ function handleShopList(player: Player, shop: Shop) {
   const category = shop.category;
   const itemList = shop.itemList as ShopItem[];
   let form = new ActionFormData()
-    .title(`§f§2§2§r§l§0   Buy ${category}\n   $${new Money().get(player.nameTag)}`)
+    .title(`§f§2§2§r§l§0   Buy ${category}\n   $${formatNumber(new Money().get(player.nameTag))}`)
 
   for (let i = 0; i < itemList.length; i++) {
     let { typeId, price, texture, per } = itemList[i];
