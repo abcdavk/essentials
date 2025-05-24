@@ -1,13 +1,24 @@
-import { ItemStack, Player } from "@minecraft/server"
+import { EntityComponentTypes, EquipmentSlot, ItemLockMode, ItemStack, Player } from "@minecraft/server"
 import { ActionFormData } from "@minecraft/server-ui"
 import { jobMenuMainUI } from "./essentials/jobMenu/form_ui"
 import { shopCategory } from "./essentials/shop/main";
 import { changeTitleMenu } from "./essentials/title/form_ui";
 import { auctionHouseMainUI } from "./essentials/auctionHouse/main";
 import { playerSendMoney } from "./essentials/money";
+import { sellHandSelectItem } from "./essentials/sellHand/main";
+
+export function hubMenuSetup(player: Player) {
+  const equip = player.getComponent(EntityComponentTypes.Equippable);
+  if (!player.hasTag("ess:hub_menu_give")) {
+    const itemStack = new ItemStack("dave:hub_menu")
+    itemStack.lockMode = ItemLockMode.inventory;
+    equip?.setEquipment(EquipmentSlot.Mainhand, itemStack);
+    player.addTag("ess:hub_menu_give")
+  }
+}
 
 export function hubMenu(player: Player, itemStack: ItemStack) {
-  if (itemStack.typeId === "minecraft:compass") {
+  if (itemStack.typeId === "dave:hub_menu") {
     let form = new ActionFormData()
       .title('§f§2§0§r§l§0Hub Menu')
       .button('', 'textures/ui/new_ui/M1')
@@ -33,6 +44,7 @@ function shopMenu(player: Player) {
     if (res.selection === 0) shopCategory(player);
     if (res.selection === 1) auctionHouseMainUI(player);
     if (res.selection === 2) playerSendMoney(player);
+    if (res.selection === 3) sellHandSelectItem(player);
   });
 }
 
