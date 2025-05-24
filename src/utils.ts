@@ -1,3 +1,5 @@
+import { custom_id_texture } from "./essentials/config";
+import { typeIdToID } from "./libs/typeIds";
 
 export function calculateNextValue(level: number, initial: number, step: number): number {
     if (level < 1) return initial;
@@ -15,4 +17,36 @@ export function itemTypeIdToName(itemtype: string): string {
 
 export function formatNumber(num: number): string {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+export function generateRandomID(length: number = 8): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    result += chars[randomIndex];
+  }
+  return result;
+}
+
+export function truncateWithDots(text: string, maxLength: number = 12): string {
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+}
+
+const number_of_1_16_100_items = 1;
+
+export function convertTypeIdToAuxIcon(typeId: string): string {
+  const ID = typeIdToID.get(typeId);
+  
+  if (ID !== undefined) {
+    const finalID = ((ID + (ID < 256 ? 0 : number_of_1_16_100_items)) * 65536);
+    return `§aaux_item§a${finalID}`;
+  }
+
+  const texturePath = custom_id_texture[typeId];
+  if (texturePath) {
+    return texturePath;
+  }
+
+  return 'textures/unknown';
 }

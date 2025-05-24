@@ -1,9 +1,9 @@
 import { EntityComponentTypes, EquipmentSlot } from "@minecraft/server";
 import { adminMenuMainUI } from "./form_ui";
 export function adminMenu(player, itemStack) {
+    if (itemStack.typeId !== "dave:admin_menu")
+        return;
     if (player.isOp()) {
-        if (itemStack.typeId !== "dave:admin_menu")
-            return;
         adminMenuMainUI(player);
     }
     else {

@@ -1,8 +1,65 @@
 import { world } from "@minecraft/server";
+import { ModalFormData } from "@minecraft/server-ui";
 export function moneySetup() {
     if (!world.getDynamicProperty("ess:money")) {
         world.setDynamicProperty("ess:money", JSON.stringify([]));
     }
+}
+export function playerSendMoney(player) {
+    const players = world.getPlayers();
+    const moneyData = new Money();
+    const currentMoney = moneyData.get(player.nameTag);
+    const playerList = ["None"];
+    players.forEach(p => {
+        if (p.nameTag !== player.nameTag) {
+            playerList.push(p.nameTag);
+        }
+    });
+    const form = new ModalFormData()
+        .title("Send Money")
+        .label(`Your money: §a$${currentMoney}`)
+        .dropdown("Select Online Player:", playerList, { defaultValueIndex: 0 })
+        .textField("Or type player username", "Type here", { tooltip: "Type manually if the player is not in the dropdown/offline" })
+        .textField("Amount to send:", "0", { defaultValue: `0` });
+    form.show(player).then(res => {
+        if (!res.formValues || res.canceled)
+            return;
+        const [label, dropdownIndex, typedName, amountStr] = res.formValues;
+        const amount = parseFloat(amountStr);
+        if (isNaN(amount) || amount <= 0) {
+            player.sendMessage("§cInvalid amount.");
+            return;
+        }
+        const usingDropdown = dropdownIndex !== 0;
+        const usingTypedName = typedName !== "";
+        if (usingDropdown && usingTypedName) {
+            player.sendMessage("§cPlease only use either the dropdown or the typed name, not both.");
+            return;
+        }
+        let targetName = "";
+        if (usingDropdown) {
+            targetName = playerList[dropdownIndex];
+        }
+        else if (usingTypedName) {
+            targetName = typedName.trim();
+        }
+        else {
+            player.sendMessage("§cPlease select or type a player's name.");
+            return;
+        }
+        if (targetName === player.nameTag) {
+            player.sendMessage("§cYou can't send money to yourself.");
+            return;
+        }
+        if (currentMoney < amount) {
+            player.sendMessage("§cYou don't have enough money.");
+            return;
+        }
+        moneyData.remove(player.nameTag, amount);
+        moneyData.add(targetName, amount);
+        player.runCommand(`tellraw ${targetName} {"rawtext":[{"text":"§b${player.nameTag}§r sent you §a$${amount}"}]}`);
+        player.sendMessage(`Sent §a$${amount}§r to §b${targetName}`);
+    });
 }
 export class Money {
     constructor() {

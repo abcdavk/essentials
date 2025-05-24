@@ -62,7 +62,6 @@ export type Shop = {
 export type ShopItem = {
   typeId: string;
   price: number,
-  texture: string;
   per?: number
 }
 
@@ -71,4 +70,16 @@ export type Title = {
   color: string,
   name: string,
   texture: string
+}
+
+export type AuctionSold = {
+  id: string,
+  price: number,
+  amount: number,
+  expire: number
+}
+
+export type AuctionData = {
+  nameTag: string,
+  auctionList: AuctionSold[]
 }

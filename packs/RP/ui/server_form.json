@@ -49,7 +49,8 @@
         "$COMMON_BUTTON_hover_control": "server_form.hover",
         "$COMMON_BUTTON_pressed_control": "server_form.hover",
         
-
+        "$BUTTON_STYLE_default_variable_texture": "textures/ui/button",
+        "$COMMON_BUTTON_style_control": "starlib_pkg_button_style.disabled_variable_button_style",
         "$COMMON_BUTTON_panel_control": "starlib_pkg_button_common.disabled_variable_button_panel",
         "$BUTTON_STYLE_disabled_variable_key": "§m§0§0",
         "$BUTTON_STYLE_disabled_variable_texture": "textures/ui/button_hover",
@@ -120,7 +121,7 @@
                         "100%c"
                     ],
                     "$grid_item": "server_form.grid_button",
-                    "$BUTTON_STYLE_default_texture": "textures/blocks/none",
+                    "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
                     "$COMMON_BUTTON_hover_control": "server_form.hover_none",
                     "$COMMON_BUTTON_pressed_control": "server_form.hover_none"
                 }
@@ -169,7 +170,7 @@
                         "100%c"
                     ],
                     "$grid_item": "server_form.grid_button",
-                    "$BUTTON_STYLE_default_texture": "textures/blocks/none",
+                    "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
                     "$COMMON_BUTTON_hover_control": "server_form.hover_none",
                     "$COMMON_BUTTON_pressed_control": "server_form.hover_none"
                 }
@@ -218,7 +219,7 @@
                         "100%c"
                     ],
                     "$grid_item": "server_form.grid_button",
-                    "$BUTTON_STYLE_default_texture": "textures/blocks/none",
+                    "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
                     "$COMMON_BUTTON_hover_control": "server_form.hover_none",
                     "$COMMON_BUTTON_pressed_control": "server_form.hover_none"
                 }
@@ -545,10 +546,108 @@
     "shop_grid@starlib_pkg_button_templates.grid_item_template": {
         "anchor_to": "center",
         "anchor_from": "center",
-        "$GRID_ITEM_root_control": "starlib_pkg_button_templates.cubic_button",
+        "$GRID_ITEM_root_control": "server_form.shop_cubic_button",
         "$GRID_ITEM_size": [
             "16.6%",
-            80
+            100
+        ]
+    },
+    "shop_cubic_button@starlib_pkg_button_templates.cubic_button": {
+        "type": "panel",
+        "size": "$CUBIC_BUTTON_size",
+        "$CUBIC_BUTTON_size|default": [
+            "100%",
+            "100%x"
+        ],
+        "controls": [
+            {
+                "root@starlib_pkg_button_common.common_button": {
+                }
+            },
+            {
+                "text@starlib_pkg_button_common.button_text": {
+                    "offset": [0, -5],
+                    "anchor_to": "bottom_middle",
+                    "anchor_from": "bottom_middle"
+                }
+            },
+            {
+                "image": {
+                    "type": "panel",
+                    "layer": 300,
+                    "size": ["100%c", "100%c"],
+                    "anchor_to": "top_middle",
+                    "anchor_from": "top_middle",
+                    "offset": [0, 13],
+                    "controls": [
+                        {
+                            "button_image@starlib_pkg_button_common.button_image": {
+                                "size": [32, 32],
+                                "bindings": [
+                                    {
+                                        "binding_name": "#form_button_texture",
+                                        "binding_name_override": "#texture",
+                                        "binding_type": "collection",
+                                        "binding_collection_name": "form_buttons"
+                                    },
+                                    {
+                                        "binding_name": "#form_button_texture_file_system",
+                                        "binding_name_override": "#texture_file_system",
+                                        "binding_type": "collection",
+                                        "binding_collection_name": "form_buttons"
+                                    },
+                                    {
+                                        "binding_type": "view",
+                                        "source_property_name": "((#texture - '§aaux_item§a') = #texture)",
+                                        "target_property_name": "#visible"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "item_block@beacon.item_renderer": {
+                                "size": [32, 32],
+                                "bindings": [
+                                    {
+                                        "binding_name": "#form_button_texture",
+                                        "binding_name_override": "#texture",
+                                        "binding_type": "collection",
+                                        "binding_collection_name": "form_buttons"
+                                    },
+                                    {
+                                        "binding_type": "view",
+                                        "source_property_name": "(not((#texture - '§aaux_item§a') = #texture))",
+                                        "target_property_name": "#visible"
+                                    },
+                                    {
+                                        "binding_type": "view",
+                                        "source_property_name": "((#texture - '§aaux_item§a') * 1)",
+                                        "target_property_name": "#item_id_aux"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "background": {
+                    "type": "image",
+                    "size": [
+                        "100%-10px",
+                        "50%"
+                    ],
+                    "layer": 299,
+
+                    "offset": [
+                        0,
+                        5
+                    ],
+                    "anchor_from": "top_middle",
+                    "anchor_to": "top_middle",
+                    "texture": "textures/ui/button_disabled"
+                }
+            }
         ]
     },
     "header@style.image": {
@@ -589,7 +688,11 @@
 
     },
     "shop_title@starlib_pkg_screen_common.title_template": {
-        "text_alignment": "left"
+        "text_alignment": "left",
+        "offset": [
+            10,
+            0
+        ]
     },
     "header_blue@style.image": {
         "texture": "textures/ui/header_blue"

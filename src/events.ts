@@ -4,7 +4,7 @@ import { jobMenuBlockBreakHandler, jobMenuFishingHandler, jobMenuInterval, jobMe
 import { moneySetup } from "./essentials/money";
 import { adminMenu } from "./essentials/adminMenu/main";
 import { playerTitleSetup, titleOnChat, titleSetup } from "./essentials/title/main";
-import { auctionHouseSetup } from "./essentials/auctionHouse/main";
+import { auctionHouseInterval, auctionHousePlayerSetup, auctionHouseSetup } from "./essentials/auctionHouse/main";
 
 world.afterEvents.worldLoad.subscribe(() => {
   moneySetup();
@@ -20,7 +20,7 @@ world.afterEvents.playerSpawn.subscribe(({
 }) => {
   playerTitleSetup(player);
   jobMenuSetup(player);
-  auctionHouseSetup(player);
+  auctionHousePlayerSetup(player);
 });
 
 // world.beforeEvents.playerLeave.subscribe(({ player }) => {
@@ -58,4 +58,5 @@ system.runInterval(() => {
     const dimension = player.dimension;
     jobMenuInterval(player);
   });
+  auctionHouseInterval();
 });

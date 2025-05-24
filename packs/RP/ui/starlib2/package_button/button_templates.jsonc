@@ -250,6 +250,7 @@
                     ]
                 }
             },
+                       
             {
                 "button_text@$CUBIC_BUTTON_text_control": {
                     "font_scale_factor": 0.9

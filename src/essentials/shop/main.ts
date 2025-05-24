@@ -1,6 +1,6 @@
 import { Player } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
-import { itemTypeIdToName, formatNumber } from "../../utils";
+import { itemTypeIdToName, formatNumber, convertTypeIdToAuxIcon } from "../../utils";
 import { shopRegistry } from "./config";
 import { Shop, ShopItem, Title } from "../../interfaces";
 import { Money } from "../money";
@@ -27,12 +27,12 @@ function handleTitleLevel(player: Player, title: Shop) {
   const titleList = title.titleList as Title[];
   const ownedTitle = new TitleData().getArray(player.nameTag)
   let form = new ActionFormData()
-    .title(`§f§2§2§r§l§0   Buy ${category}\n   $${formatNumber(new Money().get(player.nameTag))}`)
+    .title(`§f§2§2§r§l§0Buy ${category}\n§r§2$${formatNumber(new Money().get(player.nameTag))}`)
 
   for (let i = 0; i < titleList.length; i++) {
     let { name, price, texture } = titleList[i];
     let hasPurchased = !ownedTitle.includes(name) ? `§r${name}\n§a$${price}` : `§m§0§0§r${name}\n§7Purchased`
-    form.button(hasPurchased, "textures/" + texture)
+    form.button(hasPurchased, convertTypeIdToAuxIcon(texture))
   }
   form.show(player).then(res => {
     if (res.selection === undefined) return;
@@ -65,13 +65,14 @@ function handleShopList(player: Player, shop: Shop) {
   const category = shop.category;
   const itemList = shop.itemList as ShopItem[];
   let form = new ActionFormData()
-    .title(`§f§2§2§r§l§0   Buy ${category}\n   $${formatNumber(new Money().get(player.nameTag))}`)
+    .title(`§f§2§2§r§l§0Buy ${category}\n§r§2$${formatNumber(new Money().get(player.nameTag))}`)
 
   for (let i = 0; i < itemList.length; i++) {
-    let { typeId, price, texture, per } = itemList[i];
-    typeId = itemTypeIdToName(typeId)
-    let itemInfo = per === undefined ? `${typeId}` : `${per}x ${typeId}`;
-    form.button(`§r${itemInfo}\n§a$${price}`, "textures/" + texture)
+    let { typeId, price, per } = itemList[i];
+    let itemName = itemTypeIdToName(typeId)
+    let itemInfo = per === undefined ? `${itemName}` : `${per}x ${itemName}`;
+    let icon = convertTypeIdToAuxIcon(typeId)
+    form.button(`§r${itemInfo}\n§a$${price}`, icon)
   }
   form.show(player).then(res => {
     if (res.selection === undefined) return;

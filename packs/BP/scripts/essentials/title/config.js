@@ -1,7 +1,7 @@
 const texture = {
-    emerald: "items/emerald",
-    amethyst: "items/amethyst_shard",
-    gold: "items/gold_ingot"
+    emerald: "minecraft:emerald",
+    amethyst: "minecraft:amethyst_shard",
+    gold: "minecraft:gold_ingot"
 };
 export const titleRegistry = [
     { price: 100, color: "§a", name: "100-air", texture: texture.emerald },
