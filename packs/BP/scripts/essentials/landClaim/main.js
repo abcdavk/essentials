@@ -2,6 +2,7 @@ import { EntityComponentTypes, system, world } from "@minecraft/server";
 import { handleBreakProtectionBlock, handleInteractProtectionBlock, handlePlaceProtectionBlock } from "./protection_block";
 import { ActionFormData } from "@minecraft/server-ui";
 import { Expired, Protection } from "./classes";
+import { handleBuyPlotUI } from "./form_ui";
 // ================Begin-Initialization================
 world.afterEvents.playerSpawn.subscribe(({ player }) => {
     console.log("spawning ", player.nameTag);
@@ -20,7 +21,7 @@ function getPlayerProtectionData(player, origin) {
         const protectionBlock = dimension.getBlock(protection.location);
         if (!protectionBlock)
             continue;
-        const protectionData = new Protection().get(protectionBlock);
+        const protectionData = new Protection().get(protectionBlock.center());
         if (!protectionData)
             continue;
         const { x: cx, z: cz } = protection.location;
@@ -104,10 +105,14 @@ world.beforeEvents.playerBreakBlock.subscribe((data) => {
     }
 });
 world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
-    let { block, player, itemStack } = data;
+    const { block, player } = data;
+    const id = block.typeId.toLowerCase();
+    const isProtectionBlock = id.includes("lc:protection_block");
     const { isOwner, allowList } = getPlayerProtectionData(player, block);
+    // Hanya jika bukan owner
     if (!isOwner) {
-        const id = block.typeId.toLowerCase();
+        const protectionData = new Protection().get(block.center());
+        // Cek permission spesifik
         const permissionChecks = [
             { keywords: ["button"], permission: "allow_button" },
             { keywords: ["tnt"], permission: "allow_tnt" },
@@ -123,6 +128,7 @@ world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
                 }
             }
         }
+        // Jika tidak termasuk permissionChecks, cek izin umum
         if (!matched) {
             const generalInteractKeywords = [
                 "craft", "table", "anvil", "stand", "grind", "furnace", "smoker",
@@ -136,13 +142,22 @@ world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
                 }
             }
         }
+        // Penanganan UI Jual Tanah (hanya jika protection block & dijual)
+        if (protectionData.isSell && isProtectionBlock) {
+            const now = Date.now();
+            const lastUsed = playerCooldowns.get(player.nameTag) ?? 0;
+            // Cooldown 260ms
+            if (now - lastUsed >= 260) {
+                playerCooldowns.set(player.nameTag, now);
+                system.run(() => handleBuyPlotUI(player, block, block.dimension, protectionData));
+            }
+        }
     }
     const now = Date.now();
     const lastUsed = playerCooldowns.get(player.nameTag) ?? 0;
     if (now - lastUsed < 260)
         return;
     playerCooldowns.set(player.nameTag, now);
-    let isProtectionBlock = block.typeId.includes("lc:protection_block");
     if (isProtectionBlock) {
         system.run(() => handleInteractProtectionBlock(data));
     }
@@ -164,7 +179,7 @@ world.beforeEvents.explosion.subscribe((data) => {
         const protectionBlock = dimension.getBlock(protectionEntity.location);
         if (!protectionBlock)
             continue;
-        const protectionData = new Protection().get(protectionBlock);
+        const protectionData = new Protection().get(protectionBlock.center());
         if (!protectionData)
             continue;
         const { x: cx, z: cz } = protectionEntity.location;
@@ -192,7 +207,7 @@ system.runInterval(() => {
             const protectionBlock = dimension.getBlock(protectionEntity.location);
             if (!protectionBlock)
                 continue;
-            const protectionData = new Protection().get(protectionBlock);
+            const protectionData = new Protection().get(protectionBlock.center());
             if (!protectionData)
                 continue;
             dimension.getEntities().forEach(entity => {
@@ -231,7 +246,7 @@ system.runInterval(() => {
             const protectionBlock = dimension.getBlock(protectionEntity.location);
             if (!protectionBlock)
                 continue;
-            const protectionData = new Protection().get(protectionBlock);
+            const protectionData = new Protection().get(protectionBlock.center());
             if (!protectionData)
                 continue;
             const { x: cx, z: cz } = protectionEntity.location;

@@ -38,7 +38,7 @@
     //
     //=======================================
     "close_button_default@image": {
-        "texture": "textures/ui/close_button_default_light"
+        "texture": "textures/ui/close_button_default"
     },
     "close_button_hover@image": {
         "texture": "textures/ui/close_button_hover_light"

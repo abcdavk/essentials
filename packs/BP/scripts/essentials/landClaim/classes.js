@@ -114,6 +114,7 @@ export class Protection {
             nameTag: playerName,
             location: blockLoc,
             protectionSize: protectionSize,
+            isSell: false,
             settings: {
                 plotName: defaultPlotName,
                 showBoundaries: true,

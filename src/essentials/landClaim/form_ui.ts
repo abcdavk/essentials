@@ -2,6 +2,66 @@ import { Block, Dimension, Player, world } from "@minecraft/server";
 import { Protection } from "./classes";
 import { AllowList, ProtectionData } from "../../interfaces";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
+import { Money } from "../money";
+
+const plotSellPrice = [
+  { size: 25, price: 50 },
+  { size: 50, price: 75 },
+  { size: 75, price: 100 },
+  { size: 100, price: 150 },
+  { size: 250, price: 400 },
+]
+
+export function handleSellPlotUI(player: Player, block: Block, dimension: Dimension, protectionData: ProtectionData) {
+  const sellPrice = plotSellPrice.filter(plot => plot.size === protectionData.protectionSize)[0].price;
+  const { x, y, z } = protectionData.location;
+  let form = new ActionFormData()
+    .title(`§f§0§1§r§l§0Sell Plot`)
+    .body(`Plot Name: §e${protectionData.settings.plotName}§r\nPlot Location: §e${x.toFixed(0)} ${y.toFixed(0)} ${z.toFixed(0)}§r\nPlot Size: §e${protectionData.protectionSize} blocks§r\n\nSell Price: §a$${sellPrice}\n\n\n\n\n\n\n\n\n\n\n`)
+  if (protectionData.isSell) {
+    form.button("§l§cCancel Sell");
+  } else {
+    form.button(`Sell for §l$${sellPrice}`);
+  }
+  form.show(player).then(res => {
+    if (res.selection === undefined) return;
+    if (protectionData.isSell) {
+      protectionData.isSell = false;
+      new Protection().set(block.center(), protectionData);
+    } else {
+      protectionData.isSell = true;
+      new Protection().set(block.center(), protectionData);
+    }
+  });
+}
+
+export function handleBuyPlotUI(player: Player, block: Block, dimension: Dimension, protectionData: ProtectionData) {
+  const sellPrice = plotSellPrice.filter(plot => plot.size === protectionData.protectionSize)[0].price;
+  const { x, y, z } = protectionData.location;
+  let form = new ActionFormData()
+    .title(`§f§0§1§r§l§0Buy Plot`)
+    .body(`Plot Name: §e${protectionData.settings.plotName}§r\nPlot Location: §e${x.toFixed(0)} ${y.toFixed(0)} ${z.toFixed(0)}§r\nPlot Size: §e${protectionData.protectionSize} blocks§r\n\nSell Price: §a$${sellPrice}\n\n\n\n\n\n\n\n`)
+    .button(`Cancel`)
+    .button(`Buy for §l$${sellPrice}`);
+  form.show(player).then(res => {
+    if (res.selection === undefined) return;
+    if (res.selection === 1) {
+      const isCanceled = new Money().remove(player.nameTag, sellPrice);
+      if (!isCanceled) {
+        new Money().add(protectionData.nameTag, sellPrice);
+        player.sendMessage(`Successfully purchased plot at §e${x.toFixed(0)} ${y.toFixed(0)} ${z.toFixed(0)}§r for §a$${sellPrice}§r`);
+        player.runCommand(`tellraw ${protectionData.nameTag} {"rawtext":[{"text":"§b${player.nameTag}§r buys your plot at §e${x.toFixed(0)} ${y.toFixed(0)} ${z.toFixed(0)}§r for §a$${sellPrice}§r"}]}`)
+        protectionData.nameTag = player.nameTag;
+        protectionData.allowList = [];
+        
+        protectionData.isSell = false;
+        new Protection().set(block.center(), protectionData);
+      } else {
+        player.sendMessage(`§cYou don't have enough money! Total price: $${sellPrice}`);
+      }
+    }
+  });
+}
 
 export function handleSettingUI(player: Player, block: Block, dimension: Dimension, protectionData: ProtectionData) {
   let form = new ModalFormData()

@@ -37,10 +37,11 @@ export type Settings = {
   anti_hostile: boolean
 }
 
-export interface ProtectionData {
+export type ProtectionData = {
   nameTag: string;
   location: Vector3;
   protectionSize: number;
+  isSell: boolean;
   settings: Settings;
   allowList: AllowList[]  
 }

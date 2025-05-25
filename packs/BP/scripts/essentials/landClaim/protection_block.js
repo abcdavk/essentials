@@ -1,7 +1,7 @@
 import { system, world } from "@minecraft/server";
 import { Expired, Protection } from "./classes";
 import { ActionFormData } from "@minecraft/server-ui";
-import { handleAddFriendUI, handleRemoveFriendUI, handleSettingUI, handleShowAllFriendUI } from "./form_ui";
+import { handleAddFriendUI, handleRemoveFriendUI, handleSellPlotUI, handleSettingUI, handleShowAllFriendUI } from "./form_ui";
 export function handlePlaceProtectionBlock(data) {
     let { dimension, permutationBeingPlaced, block, player } = data;
     const protectionSize = parseInt(permutationBeingPlaced.type.id.split("_")[2]);
@@ -38,12 +38,16 @@ export function handleInteractProtectionBlock(data) {
         if (player.hasTag("ess:inAuctionSell"))
             return;
         let form = new ActionFormData()
-            .title('§f§2§0§r§l§0Protection Block Menu')
+            .title('§f§2§4§r§l§0Protection Block Menu')
             .button('', "textures/ui/new_ui/claimblock/C1")
             .button('', "textures/ui/new_ui/claimblock/C2")
             .button('', "textures/ui/new_ui/claimblock/C3")
-            .button('', "textures/ui/new_ui/claimblock/C4");
+            .button('', "textures/ui/new_ui/claimblock/C4")
+            .button('', "textures/ui/new_ui/claimblock/C5");
         form.show(player).then(res => {
+            if (res.selection === 4) {
+                system.run(() => { handleSellPlotUI(player, block, dimension, protectionData); });
+            }
             if (res.selection === 3) {
                 system.run(() => { handleAddFriendUI(player, block, dimension, protectionData); });
             }
