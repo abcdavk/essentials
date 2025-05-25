@@ -22,7 +22,7 @@ export function handleSettingUI(player, block, dimension, protectionData) {
                 anti_arrow: res.formValues[5],
                 anti_splash_potion: res.formValues[6],
             };
-            new Protection().set(block, protectionData);
+            new Protection().set(block.center(), protectionData);
         }
     });
 }
@@ -56,7 +56,7 @@ export function handleAddFriendUI(player, block, dimension, protectionData) {
                         allow_attack_animals: true,
                         allow_attack_players: false,
                     });
-                    new Protection().set(block, protectionData);
+                    new Protection().set(block.center(), protectionData);
                 }
                 if (res.formValues[1] !== "") {
                     protectionData.allowList.push({
@@ -71,7 +71,7 @@ export function handleAddFriendUI(player, block, dimension, protectionData) {
                         allow_attack_animals: true,
                         allow_attack_players: false,
                     });
-                    new Protection().set(block, protectionData);
+                    new Protection().set(block.center(), protectionData);
                 }
             }
         }
@@ -125,7 +125,7 @@ function handleFriendSettingUI(player, block, dimension, protectionData, allowLi
                 allow_attack_players: res.formValues[8],
             });
             protectionData.allowList = friendList;
-            new Protection().set(block, protectionData);
+            new Protection().set(block.center(), protectionData);
         }
     });
 }
@@ -157,8 +157,8 @@ function handleRemoveConfirmationUI(player, block, dimension, protectionData, al
                 return !(friend.nameTag === allowList.nameTag);
             });
             protectionData.allowList = friendList;
-            new Protection().set(block, protectionData);
-            handleRemoveFriendUI(player, block, dimension, new Protection().get(block));
+            new Protection().set(block.center(), protectionData);
+            handleRemoveFriendUI(player, block, dimension, new Protection().get(block.center()));
         }
         else {
             handleRemoveFriendUI(player, block, dimension, protectionData);

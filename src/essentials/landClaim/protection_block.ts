@@ -13,8 +13,8 @@ export function handlePlaceProtectionBlock(data: PlayerPlaceBlockBeforeEvent) {
     player
   } = data;
   const protectionSize = parseInt(permutationBeingPlaced.type.id.split("_")[2]);
-  new Protection().init(player, block, protectionSize);
-  new Expired().init(player, block);
+  new Protection().init(player.nameTag, block.center(), protectionSize);
+  new Expired().init(player.nameTag, block.center());
 
   dimension.spawnEntity("lc:protection_block" as VanillaEntityIdentifier, block.center());
   
@@ -36,11 +36,11 @@ export function handleBreakProtectionBlock(data: PlayerBreakBlockBeforeEvent) {
     // console.log("Removing protection entity, size: ", protectionEntity.getDynamicProperty("lc:protection_size"))
     const protection = new Protection();
     const expired = new Expired();
-    const protectionData = protection.get(block);
+    const protectionData = protection.get(block.center());
     if (protectionData === undefined) return;
     if (protectionData.nameTag === player.nameTag) {
-      protection.remove(block);
-      expired.remove(block)
+      protection.remove(block.center());
+      expired.remove(block.center())
       protectionEntity.remove();
     }
   });
@@ -53,8 +53,9 @@ export function handleInteractProtectionBlock(data: PlayerInteractWithBlockBefor
   } = data;
 
   const dimension = world.getDimension(player.dimension.id);
-  const protectionData = new Protection().get(block);
+  const protectionData = new Protection().get(block.center());
   if (protectionData.nameTag === player.nameTag) {
+    if (player.hasTag("ess:inAuctionSell")) return;
     let form = new ActionFormData()
       .title('§f§2§0§r§l§0Protection Block Menu')
       .button('', "textures/ui/new_ui/claimblock/C1")

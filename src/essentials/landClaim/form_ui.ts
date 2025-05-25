@@ -24,7 +24,7 @@ export function handleSettingUI(player: Player, block: Block, dimension: Dimensi
         anti_arrow: res.formValues[5] as boolean,
         anti_splash_potion: res.formValues[6] as boolean,
       }
-      new Protection().set(block, protectionData);
+      new Protection().set(block.center(), protectionData);
     }
   });
 }
@@ -59,7 +59,7 @@ export function handleAddFriendUI(player: Player, block: Block, dimension: Dimen
             allow_attack_animals: true,
             allow_attack_players: false,
           });
-          new Protection().set(block, protectionData);
+          new Protection().set(block.center(), protectionData);
         }
         if (res.formValues[1] !== "") {
           protectionData.allowList.push({
@@ -74,7 +74,7 @@ export function handleAddFriendUI(player: Player, block: Block, dimension: Dimen
             allow_attack_animals: true,
             allow_attack_players: false,
           });
-          new Protection().set(block, protectionData);
+          new Protection().set(block.center(), protectionData);
         }
       }
     }
@@ -142,7 +142,7 @@ function handleFriendSettingUI(player: Player, block: Block, dimension: Dimensio
         allow_attack_players: res.formValues[8] as boolean,
       });
       protectionData.allowList = friendList;
-      new Protection().set(block, protectionData);
+      new Protection().set(block.center(), protectionData);
     }
   });
 }
@@ -178,8 +178,8 @@ function handleRemoveConfirmationUI(player: Player, block: Block, dimension: Dim
         );
       });
       protectionData.allowList = friendList;
-      new Protection().set(block, protectionData);
-      handleRemoveFriendUI(player, block, dimension, new Protection().get(block));
+      new Protection().set(block.center(), protectionData);
+      handleRemoveFriendUI(player, block, dimension, new Protection().get(block.center()));
     } else {
       handleRemoveFriendUI(player, block, dimension, protectionData);
     }

@@ -18,14 +18,14 @@ export class Expired {
         world.setDynamicProperty(this.key, JSON.stringify(data));
     }
     /** Expired 12 days from now */
-    init(player, block) {
+    init(playerName, blockLoc) {
         const now = Date.now();
         const twoWeeks = 14 * 24 * 60 * 60 * 1000;
         const expiredAt = now + twoWeeks;
         const newEntry = {
-            location: block.location,
+            location: blockLoc,
             date: expiredAt,
-            nameTag: player.nameTag
+            nameTag: playerName
         };
         const currentData = this.getAllExpiredDate();
         const index = currentData.findIndex(entry => entry.location.x === newEntry.location.x &&
@@ -40,13 +40,13 @@ export class Expired {
         this.saveAllExpiredDate(currentData);
     }
     /** Update expired date */
-    update(player) {
+    update(playerName) {
         const now = Date.now();
         const twoWeeks = 14 * 24 * 60 * 60 * 1000;
         const newExpireTime = now + twoWeeks;
         const currentData = this.getAllExpiredDate();
         const updatedData = currentData.map(entry => {
-            if (entry.nameTag === player.nameTag) {
+            if (entry.nameTag === playerName) {
                 return {
                     ...entry,
                     date: newExpireTime
@@ -68,29 +68,29 @@ export class Expired {
         this.saveAllExpiredDate(filtered);
     }
     /** Remove specific expired data */
-    remove(block) {
+    remove(blockLoc) {
         const current = this.getAllExpiredDate();
         const entry = current.filter(e => {
-            return !(e.location.x === block.location.x &&
-                e.location.y === block.location.y &&
-                e.location.z === block.location.z);
+            return !(e.location.x === blockLoc.x &&
+                e.location.y === blockLoc.y &&
+                e.location.z === blockLoc.z);
         });
-        console.log(`removing expired data: ${JSON.stringify(block.center())}`);
+        console.log(`removing expired data: ${JSON.stringify(blockLoc)}`);
         this.saveAllExpiredDate(entry);
     }
     /** Check location is expired */
-    isExpired(block) {
+    isExpired(blockLoc) {
         const now = Date.now();
         const current = this.getAllExpiredDate();
-        const entry = current.find(e => e.location.x === block.location.x &&
-            e.location.y === block.location.y &&
-            e.location.z === block.location.z);
+        const entry = current.find(e => e.location.x === blockLoc.x &&
+            e.location.y === blockLoc.y &&
+            e.location.z === blockLoc.z);
         return entry ? entry.date <= now : false;
     }
     /** Get total expired blocks owned by player */
-    getPlayerExpiredLength(player) {
+    getPlayerExpiredLength(playerName) {
         const currentData = this.getAllExpiredDate();
-        return currentData.filter(entry => entry.nameTag === player.nameTag).length;
+        return currentData.filter(entry => entry.nameTag === playerName).length;
     }
 }
 export class Protection {
@@ -100,19 +100,19 @@ export class Protection {
         data = data.filter(d => d && typeof d === "object" && d.nameTag);
         return data;
     }
-    debug(player) {
-        const data = this.getProtectionData();
-        player.sendMessage(`=====================`);
-        for (let i = 0; i < data.length; i++) {
-            player.sendMessage(`§a${i} - §7${JSON.stringify(data[i])}`);
-            // console.log(`§a${i} - §7${JSON.stringify(data[i])}`)
-        }
-    }
-    init(player, block, protectionSize) {
-        const defaultPlotName = `${player.nameTag}'s plot`;
+    // debug(playerName: string) {
+    //   const data = this.getProtectionData();
+    //   player.sendMessage(`=====================`)
+    //   for (let i = 0; i < data.length; i++) {
+    //     player.sendMessage(`§a${i} - §7${JSON.stringify(data[i])}`);
+    //     // console.log(`§a${i} - §7${JSON.stringify(data[i])}`)
+    //   }
+    // }
+    init(playerName, blockLoc, protectionSize) {
+        const defaultPlotName = `${playerName}'s plot`;
         const protection_data = {
-            nameTag: player.nameTag,
-            location: block.center(),
+            nameTag: playerName,
+            location: blockLoc,
             protectionSize: protectionSize,
             settings: {
                 plotName: defaultPlotName,
@@ -131,22 +131,22 @@ export class Protection {
         console.log(JSON.stringify(protection_data));
         // this.debug(player);
     }
-    remove(block) {
+    remove(blockLoc) {
         let data = this.getProtectionData();
         data = data.filter(protectionData => {
-            return !(protectionData.location.x === block.center().x &&
-                protectionData.location.y === block.center().y &&
-                protectionData.location.z === block.center().z);
+            return !(protectionData.location.x === blockLoc.x &&
+                protectionData.location.y === blockLoc.y &&
+                protectionData.location.z === blockLoc.z);
         });
         world.setDynamicProperty("lc:protection_data", JSON.stringify(data));
-        console.log("removing data: ", JSON.stringify(block.center()));
+        console.log("removing data: ", JSON.stringify(blockLoc));
     }
-    get(block) {
+    get(blockLoc) {
         let data = this.getProtectionData();
         data = data.filter(protectionData => {
-            return (protectionData.location.x === block.center().x &&
-                protectionData.location.y === block.center().y &&
-                protectionData.location.z === block.center().z);
+            return (protectionData.location.x === blockLoc.x &&
+                protectionData.location.y === blockLoc.y &&
+                protectionData.location.z === blockLoc.z);
         });
         return data[0];
     }
@@ -159,8 +159,8 @@ export class Protection {
         }
         return rawData;
     }
-    set(block, value) {
-        this.remove(block);
+    set(blockLoc, value) {
+        this.remove(blockLoc);
         const data = this.getProtectionData();
         data.push(value);
         world.setDynamicProperty("lc:protection_data", JSON.stringify(data));

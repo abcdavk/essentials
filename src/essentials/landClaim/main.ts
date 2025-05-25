@@ -18,7 +18,7 @@ world.afterEvents.playerSpawn.subscribe(({
     world.setDynamicProperty("lc:protection_data", JSON.stringify([]));
     world.setDynamicProperty("lc:expired", JSON.stringify([]));
   };
-  new Expired().update(player);
+  new Expired().update(player.nameTag);
 });
 
 // ================End-Initialization================
@@ -100,7 +100,7 @@ world.beforeEvents.playerPlaceBlock.subscribe((data) => {
   }
 
   // If player placing protection block
-  const expiredLength = new Expired().getPlayerExpiredLength(player);
+  const expiredLength = new Expired().getPlayerExpiredLength(player.nameTag);
   console.log(expiredLength)
   if (isProtectionBlock) {
     if (expiredLength <= 10) {
@@ -335,14 +335,14 @@ system.runInterval(() => {
       const block = dimension.getBlock(protectionEntity.location);
 
       if (block === undefined) return;
-      const protectionData = new Protection().get(block);
+      const protectionData = new Protection().get(block.center());
       const expiredData = new Expired();
-      const isExpired = expiredData.isExpired(block);
+      const isExpired = expiredData.isExpired(block.center());
       if (isExpired) {
         block.setType("minecraft:air");
         protectionEntity.remove();
-        new Protection().remove(block);
-        expiredData.remove(block)
+        new Protection().remove(block.center());
+        expiredData.remove(block.center())
       }
       if (protectionData === undefined) return;
       if (!protectionData.settings.showBoundaries) return;

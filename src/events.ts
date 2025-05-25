@@ -5,10 +5,12 @@ import { moneySetup } from "./essentials/money";
 import { adminMenu } from "./essentials/adminMenu/main";
 import { playerTitleSetup, titleOnChat, titleSetup } from "./essentials/title/main";
 import { auctionHouseInterval, auctionHousePlayerSetup, auctionHouseSetup } from "./essentials/auctionHouse/main";
+import { teleportPlayerSetup, teleportSetup } from "./essentials/teleports/main";
 
 world.afterEvents.worldLoad.subscribe(() => {
   moneySetup();
   titleSetup();
+  teleportSetup();
 });
 
 world.beforeEvents.chatSend.subscribe((data) => {
@@ -22,6 +24,7 @@ world.afterEvents.playerSpawn.subscribe(({
   jobMenuSetup(player);
   auctionHousePlayerSetup(player);
   hubMenuSetup(player);
+  teleportPlayerSetup(player);
 });
 
 // world.beforeEvents.playerLeave.subscribe(({ player }) => {

@@ -6,6 +6,8 @@ import { changeTitleMenu } from "./essentials/title/form_ui";
 import { auctionHouseMainUI } from "./essentials/auctionHouse/main";
 import { playerSendMoney } from "./essentials/money";
 import { sellHandSelectItem } from "./essentials/sellHand/main";
+import { teleportSpawn } from "./essentials/teleports/main";
+import { teleportAsk, teleportPlot, teleportRequest } from "./essentials/teleports/form_ui";
 export function hubMenuSetup(player) {
     const equip = player.getComponent(EntityComponentTypes.Equippable);
     if (!player.hasTag("ess:hub_menu_give")) {
@@ -26,12 +28,32 @@ export function hubMenu(player, itemStack) {
         form.show(player).then(res => {
             if (res.selection === 0)
                 shopMenu(player);
+            if (res.selection === 1)
+                teleportMenu(player);
             if (res.selection === 2)
                 jobMenuMainUI(player);
             if (res.selection === 3)
                 hubSettings(player);
         });
     }
+}
+function teleportMenu(player) {
+    let form = new ActionFormData()
+        .title('§f§2§0§r§l§0Shop')
+        .button('', 'textures/ui/new_ui/tp/T1')
+        .button('', 'textures/ui/new_ui/tp/T2')
+        .button('', 'textures/ui/new_ui/tp/T3')
+        .button('', 'textures/ui/new_ui/tp/T4');
+    form.show(player).then(res => {
+        if (res.selection === 0)
+            teleportSpawn(player);
+        if (res.selection === 1)
+            teleportPlot(player);
+        if (res.selection === 2)
+            teleportAsk(player);
+        if (res.selection === 3)
+            teleportRequest(player);
+    });
 }
 function shopMenu(player) {
     let form = new ActionFormData()

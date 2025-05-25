@@ -6,8 +6,7 @@ export function adminMenuMainUI(player) {
         .title('§f§0§1§r§l§0Admin Menu')
         .button('Set money')
         .button('Add money')
-        .button('Remove money')
-        .button('Remove Title');
+        .button('Remove money');
     form.show(player).then(res => {
         if (res.selection === 0)
             adminMenuSetMoney(player);
@@ -15,8 +14,7 @@ export function adminMenuMainUI(player) {
             adminMenuAddMoney(player);
         if (res.selection === 2)
             adminMenuRemoveMoney(player);
-        if (res.selection === 3)
-            adminMenuRemoveTitle(player);
+        // if (res.selection === 3) adminMenuRemoveTitle(player);
     });
 }
 function adminMenuRemoveTitle(player) {
