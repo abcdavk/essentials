@@ -1,6 +1,7 @@
 import { Player, world } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { Money } from "../money";
+import { QIDB } from "../../QIDB";
 
 export function adminMenuMainUI(player: Player) {
   let form = new ActionFormData()
@@ -8,16 +9,24 @@ export function adminMenuMainUI(player: Player) {
     .button('Set money')
     .button('Add money')
     .button('Remove money')
+    .button("Create Database")
   form.show(player).then(res => {
     if (res.selection === 0) adminMenuSetMoney(player);
     if (res.selection === 1) adminMenuAddMoney(player);
     if (res.selection === 2) adminMenuRemoveMoney(player);
+    if (res.selection === 3) adminMenuInit(player);
     // if (res.selection === 3) adminMenuRemoveTitle(player);
   });
 }
 
-function adminMenuRemoveTitle(player: Player) {
-
+function adminMenuInit(player: Player) {
+  if (!world.getDynamicProperty("ess:has_database_init")) {
+    let Inventories = new QIDB('auction_house', 10, 270);
+    player.sendMessage("Database created.");
+    world.setDynamicProperty("ess:has_database_init", true);
+  } else {
+    player.sendMessage("Already created.");
+  }
 }
 
 function adminMenuSetMoney(player: Player) {

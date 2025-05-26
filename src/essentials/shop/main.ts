@@ -25,7 +25,7 @@ export function shopCategory(player: Player) {
 function handleTitleLevel(player: Player, title: Shop) {
   const category = title.category;
   const titleList = title.titleList as Title[];
-  const ownedTitle = new TitleData().getArray(player.nameTag)
+  const ownedTitle = new TitleData().getArray(player.nameTag);
   let form = new ActionFormData()
     .title(`§f§2§2§r§l§0Buy ${category}\n§r§2$${formatNumber(new Money().get(player.nameTag))}`)
 

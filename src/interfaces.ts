@@ -42,6 +42,7 @@ export type ProtectionData = {
   location: Vector3;
   protectionSize: number;
   isSell: boolean;
+  sellPrice: number;
   settings: Settings;
   allowList: AllowList[]  
 }

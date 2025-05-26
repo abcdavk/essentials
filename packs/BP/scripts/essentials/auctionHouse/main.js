@@ -5,7 +5,9 @@ import { QIDB } from "../../QIDB";
 import { auctionHouseCatalog, auctionHouseSeller, auctionHouseSellItem } from "./form_ui";
 let Inventories;
 system.run(() => {
-    Inventories = new QIDB('auction_house', 10, 270);
+    if (world.getDynamicProperty("ess:has_database_init")) {
+        Inventories = new QIDB('auction_house', 10, 270);
+    }
 });
 export function auctionHouseInterval() {
     const auctionData = new AuctionHouse().getAll();

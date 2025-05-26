@@ -5,7 +5,7 @@ import { shopCategory } from "./essentials/shop/main";
 import { changeTitleMenu } from "./essentials/title/form_ui";
 import { auctionHouseMainUI } from "./essentials/auctionHouse/main";
 import { playerSendMoney } from "./essentials/money";
-import { sellHandSelectItem } from "./essentials/sellHand/main";
+import { sellInvMenu } from "./essentials/sellHand/main";
 import { teleportSpawn } from "./essentials/teleports/main";
 import { teleportAsk, teleportPlot, teleportRequest } from "./essentials/teleports/form_ui";
 
@@ -62,7 +62,7 @@ function shopMenu(player: Player) {
     if (res.selection === 0) shopCategory(player);
     if (res.selection === 1) auctionHouseMainUI(player);
     if (res.selection === 2) playerSendMoney(player);
-    if (res.selection === 3) sellHandSelectItem(player);
+    if (res.selection === 3) sellInvMenu(player);
   });
 }
 
@@ -74,11 +74,13 @@ function hubSettings(player: Player) {
   form.show(player).then(res => {
     if (res.selection === 0) {
       if (player.hasTag("deny_attack_player")) {
+        player.addTag("pvp_enabled");
         player.removeTag("deny_attack_player");
-        player.sendMessage("§cToggle PVP disabled");
-      } else {
-        player.addTag("deny_attack_player");
         player.sendMessage("§aToggle PVP enabled");
+      } else {
+        player.removeTag("pvp_enabled");
+        player.addTag("deny_attack_player");
+        player.sendMessage("§cToggle PVP disabled");
       }
     }
     if (res.selection === 1) changeTitleMenu(player);

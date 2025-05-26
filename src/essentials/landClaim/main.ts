@@ -333,7 +333,7 @@ system.runInterval(() => {
       //   player.triggerEvent("dave:add_anti_hostile");
       // }
     } else {
-      if (player.hasTag("deny_attack_player")) {
+      if (player.hasTag("pvp_enabled") && player.hasTag("deny_attack_player")) {
         player.removeTag("deny_attack_player");
       }
       if (player.hasTag("deny_attack_animals")) {

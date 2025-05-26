@@ -138,6 +138,7 @@ export class Protection {
       location: blockLoc,
       protectionSize: protectionSize,
       isSell: false,
+      sellPrice: 0,
       settings: {
         plotName: defaultPlotName,
         showBoundaries: true,

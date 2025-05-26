@@ -33,7 +33,7 @@ export function truncateWithDots(text: string, maxLength: number = 12): string {
   return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 }
 
-const number_of_1_16_100_items = 1;
+const number_of_1_16_100_items = 2;
 
 export function convertTypeIdToAuxIcon(typeId: string): string {
   const ID = typeIdToID.get(typeId);

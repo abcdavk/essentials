@@ -8,7 +8,9 @@ import { AuctionData, AuctionSold } from "../../interfaces";
 let Inventories: QIDB
 
 system.run(() => {
-  Inventories = new QIDB('auction_house', 10, 270)
+  if (world.getDynamicProperty("ess:has_database_init")) {
+    Inventories = new QIDB('auction_house', 10, 270);
+  }
 });
 
 export function auctionHouseInterval() {

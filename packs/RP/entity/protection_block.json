@@ -4,8 +4,12 @@
     "description": {
       "identifier": "lc:protection_block",
       "min_engine_version": "1.8.0",
-      "materials": { "default": "entity_alphablend", "alpha": "entity_alphablend" },
-      "textures": { "default": "textures/blocks/protection_block_side" }
+      "materials": { "default": "armor_stand" },
+      "geometry": {
+        "default": "geometry.armor_stand"
+      },
+      "render_controllers": [ "controller.render.default" ],
+      "textures": { "default": "textures/blocks/none" }
     }
   }
 }

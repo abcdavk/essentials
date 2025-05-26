@@ -108,7 +108,7 @@
                     ],
                     "$CUBIC_BUTTON_image_size": [
                         "100%",
-                        "100%"
+                        "100%-10px"
                     ],
                     "$CUBIC_BUTTON_bottom_padding_size": [
                         0,
@@ -122,8 +122,8 @@
                     ],
                     "$grid_item": "server_form.grid_button",
                     "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
-                    "$COMMON_BUTTON_hover_control": "server_form.hover_none",
-                    "$COMMON_BUTTON_pressed_control": "server_form.hover_none"
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
                 }
             },
             {
@@ -157,7 +157,7 @@
                     ],
                     "$CUBIC_BUTTON_image_size": [
                         "100%",
-                        "100%"
+                        "100%-10px"
                     ],
                     "$CUBIC_BUTTON_bottom_padding_size": [
                         0,
@@ -171,8 +171,8 @@
                     ],
                     "$grid_item": "server_form.grid_button",
                     "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
-                    "$COMMON_BUTTON_hover_control": "server_form.hover_none",
-                    "$COMMON_BUTTON_pressed_control": "server_form.hover_none"
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
                 }
             },
             {
@@ -206,7 +206,7 @@
                     ],
                     "$CUBIC_BUTTON_image_size": [
                         "100%",
-                        "100%"
+                        "100%-10px"
                     ],
                     "$CUBIC_BUTTON_bottom_padding_size": [
                         0,
@@ -220,8 +220,8 @@
                     ],
                     "$grid_item": "server_form.grid_button",
                     "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
-                    "$COMMON_BUTTON_hover_control": "server_form.hover_none",
-                    "$COMMON_BUTTON_pressed_control": "server_form.hover_none"
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
                 }
             },
             {
@@ -255,7 +255,7 @@
                     ],
                     "$CUBIC_BUTTON_image_size": [
                         "100%",
-                        "100%"
+                        "100%-10px"
                     ],
                     "$CUBIC_BUTTON_bottom_padding_size": [
                         0,
@@ -269,8 +269,8 @@
                     ],
                     "$grid_item": "server_form.grid_button",
                     "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
-                    "$COMMON_BUTTON_hover_control": "server_form.hover_none",
-                    "$COMMON_BUTTON_pressed_control": "server_form.hover_none"
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
                 }
             },
             {

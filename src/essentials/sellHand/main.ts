@@ -1,11 +1,54 @@
 import { EntityComponentTypes, EquipmentSlot, ItemStack, Player, system } from "@minecraft/server";
 import { bannedItems } from "../auctionHouse/config";
-import { MessageFormData, ModalFormData } from "@minecraft/server-ui";
+import { ActionFormData, MessageFormData, ModalFormData } from "@minecraft/server-ui";
 import { itemTypeIdToName } from "../../utils";
 import { itemSelldefaultPrice, itemSellPriceRegistry } from "./config";
 import { Money } from "../money";
 
-export function sellHandSelectItem(player: Player) {
+export function sellInvMenu(player: Player) {
+  let form = new ActionFormData()
+    .title('§f§0§1§r§l§0Inv Sell')
+    .button('Sell Hand')
+    .button('Sell Inventory')
+  form.show(player).then(res => {
+    if (res.selection === 0) sellHandSelectItem(player);
+    if (res.selection === 1) sellAllItem(player);
+  });
+}
+
+function sellAllItem(player: Player) {
+  const inv = player.getComponent(EntityComponentTypes.Inventory);
+  const con = inv?.container;
+  if (!inv || !con) return;
+
+  let totalPrice = 0;
+  for (let i = 0; i < inv.inventorySize; i++) {
+    const itemInv = con.getItem(i)
+    if (itemInv && !bannedItems.includes(itemInv.typeId)) {
+      totalPrice += getItemSellPrice(itemInv.typeId) * itemInv.amount;
+    }
+  }
+  let confirm = new MessageFormData()
+    .title(`Sell Inventory`)
+    .body(`You will sell all items in your inventory for §a$${totalPrice.toFixed(2)}§r. Are you sure?`)
+    .button1('No')
+    .button2('Yes')
+    .show(player).then(res => {
+    if (res.selection === 1) {
+      new Money().add(player.nameTag, totalPrice);
+
+      for (let i = 0; i < inv.inventorySize; i++) {
+        const itemInv = con.getItem(i)
+        if (itemInv && !bannedItems.includes(itemInv.typeId)) {
+          con.setItem(i, undefined)
+        }
+      }
+      player.sendMessage(`Successfully sell inventory. §a+$${totalPrice.toFixed(2)}§r`);
+    }
+  });
+}
+
+function sellHandSelectItem(player: Player) {
   if (!player.hasTag("ess:inAuctionSell")) {
     player.addTag("ess:inAuctionSell");
     player.sendMessage("§eHold item you want to sell then sneak to confirm!");

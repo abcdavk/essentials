@@ -1,4 +1,4 @@
-import { EntityComponentTypes, EquipmentSlot, ItemStack, Player, system } from "@minecraft/server";
+import { EntityComponentTypes, EquipmentSlot, ItemStack, Player, system, world } from "@minecraft/server";
 import { ActionFormData, MessageFormData, ModalFormData } from "@minecraft/server-ui";
 import { AuctionHouse } from "./main";
 import { convertTypeIdToAuxIcon, formatNumber, itemTypeIdToName, truncateWithDots } from "../../utils";
@@ -10,7 +10,9 @@ import { AuctionSold } from "../../interfaces";
 let Inventories: QIDB
 
 system.run(() => {
-  Inventories = new QIDB('auction_house', 10, 270)
+  if (world.getDynamicProperty("ess:has_database_init") === true) {
+    Inventories = new QIDB('auction_house', 10, 270);
+  }
 });
 
 export function auctionHouseSeller(player: Player) {

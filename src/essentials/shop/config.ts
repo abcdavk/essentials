@@ -22,6 +22,17 @@ export const shopRegistry: Shop[] = [
     ]
   },
   {
+    category: "Plot",
+    type: "item",
+    itemList: [
+      { typeId: "lc:protection_block_25",  price: 50 },
+      { typeId: "lc:protection_block_50",  price: 75 },
+      { typeId: "lc:protection_block_75",  price: 100 },
+      { typeId: "lc:protection_block_100", price: 150 },
+      { typeId: "lc:protection_block_250", price: 400 },
+    ]
+  },
+  {
     category: "Titles",
     type: "title",
     titleList: titleRegistry
