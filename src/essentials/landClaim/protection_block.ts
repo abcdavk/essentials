@@ -1,7 +1,8 @@
-import { PlayerBreakBlockBeforeEvent, PlayerInteractWithBlockBeforeEvent, PlayerPlaceBlockBeforeEvent, system, VanillaEntityIdentifier, world } from "@minecraft/server";
+import { ItemStack, PlayerBreakBlockBeforeEvent, PlayerInteractWithBlockBeforeEvent, PlayerPlaceBlockBeforeEvent, system, VanillaEntityIdentifier, world } from "@minecraft/server";
 import { Expired, Protection } from "./classes";
 import { ActionFormData } from "@minecraft/server-ui";
 import { handleAddFriendUI, handleRemoveFriendUI, handleSellPlotUI, handleSettingUI, handleShowAllFriendUI } from "./form_ui";
+import { generateRandomID, getRadius1 } from "../../utils";
 
 
 
@@ -10,14 +11,30 @@ export function handlePlaceProtectionBlock(data: PlayerPlaceBlockBeforeEvent) {
     dimension,
     permutationBeingPlaced,
     block,
-    player
+    player,
   } = data;
+  const nearbyBlocks = getRadius1(block.location);
+  for (const vec of nearbyBlocks) {
+    const blockAround = dimension.getBlock(vec);
+    if (blockAround && blockAround.typeId.includes("lc:protection_block") &&
+      blockAround.location.x !== block.center().x &&
+      blockAround.location.y !== block.center().y &&
+      blockAround.location.z !== block.center().z
+    ) {
+      const protectionTypeId = block.typeId;
+      dimension.spawnItem(new ItemStack(protectionTypeId), block.location);
+      block.setType("minecraft:air")
+      return true;
+    }
+  }
+  const newId = generateRandomID();
+
   const protectionSize = parseInt(permutationBeingPlaced.type.id.split("_")[2]);
-  new Protection().init(player.nameTag, block.center(), protectionSize);
+  new Protection().init(player.nameTag, block.center(), protectionSize, newId);
   new Expired().init(player.nameTag, block.center());
 
-  dimension.spawnEntity("lc:protection_block" as VanillaEntityIdentifier, block.center());
-  
+  let protectionEntity = dimension.spawnEntity("lc:protection_block" as VanillaEntityIdentifier, block.center());
+  protectionEntity.setDynamicProperty("lc:entity_id", newId);
   console.log("Protection size: ", protectionSize);
 }
 
@@ -25,8 +42,11 @@ export function handleBreakProtectionBlock(data: PlayerBreakBlockBeforeEvent) {
   let {
     dimension,
     block,
-    player
+    player,
+    itemStack
   } = data;
+  if (itemStack && itemStack.typeId.includes("sword")) return;
+  block.setType("minecraft:air")
   const entities = dimension.getEntities({
     type: "lc:protection_block",
     location: block.center()

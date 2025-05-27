@@ -42,6 +42,7 @@ export type Settings = {
 }
 
 export type ProtectionData = {
+  id: string;
   nameTag: string;
   location: Vector3;
   protectionSize: number;

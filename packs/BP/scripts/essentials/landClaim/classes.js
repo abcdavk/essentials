@@ -108,9 +108,10 @@ export class Protection {
     //     // console.log(`§a${i} - §7${JSON.stringify(data[i])}`)
     //   }
     // }
-    init(playerName, blockLoc, protectionSize) {
+    init(playerName, blockLoc, protectionSize, id) {
         const defaultPlotName = `${playerName}'s plot`;
         const protection_data = {
+            id,
             nameTag: playerName,
             location: blockLoc,
             protectionSize: protectionSize,
@@ -153,6 +154,13 @@ export class Protection {
             return (protectionData.location.x === blockLoc.x &&
                 protectionData.location.y === blockLoc.y &&
                 protectionData.location.z === blockLoc.z);
+        });
+        return data[0];
+    }
+    getById(id) {
+        let data = this.getProtectionData();
+        data = data.filter(protectionData => {
+            return (protectionData.id === id);
         });
         return data[0];
     }

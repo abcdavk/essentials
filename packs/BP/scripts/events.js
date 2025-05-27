@@ -7,7 +7,7 @@ import { playerTitleSetup, titleOnChat, titleSetup } from "./essentials/title/ma
 import { auctionHouseInterval, auctionHousePlayerSetup } from "./essentials/auctionHouse/main";
 import { teleportPlayerSetup, teleportSetup } from "./essentials/teleports/main";
 import { claimedAreaOnlyBlocks, claimedAreaOnlyItems } from "./essentials/landClaim/config";
-import { adminMenuInit, adminMenuMainUI } from "./essentials/adminMenu/form_ui";
+import { adminAddPrivilage, adminMenuInit, adminMenuMainUI } from "./essentials/adminMenu/form_ui";
 world.afterEvents.worldLoad.subscribe(() => {
     moneySetup();
     titleSetup();
@@ -47,7 +47,7 @@ system.runInterval(() => {
 });
 // Custom command registry
 system.beforeEvents.startup.subscribe(({ customCommandRegistry: ccr }) => {
-    ccr.registerEnum("ess:debug_enum", ["getAllClaimAreaOnlyBlocks", "getAllClaimAreaOnlyItems", "adminMenu", "getTypeId"]);
+    ccr.registerEnum("ess:debug_enum", ["getAllClaimAreaOnlyBlocks", "getAllClaimAreaOnlyItems", "adminMenu", "getTypeId", "togglePrivilege"]);
     ccr.registerCommand({
         name: "ess:debug",
         description: "Essentials debug tools for dev.",
@@ -71,6 +71,9 @@ system.beforeEvents.startup.subscribe(({ customCommandRegistry: ccr }) => {
         }
         if (debug_enum === "adminMenu") {
             system.run(() => adminMenuMainUI(player));
+        }
+        if (debug_enum === "togglePrivilege") {
+            system.run(() => adminAddPrivilage(player));
         }
         return { status: CustomCommandStatus.Success, message: "Done." };
     }));

@@ -41,3 +41,21 @@ export function convertTypeIdToAuxIcon(typeId, enchanted = false) {
     }
     return 'textures/unknown';
 }
+export function getRadius1(pos) {
+    const result = [];
+    for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dz = -1; dz <= 1; dz++) {
+                // Skip center block if not needed
+                if (dx === 0 && dy === 0 && dz === 0)
+                    continue;
+                result.push({
+                    x: pos.x + dx,
+                    y: pos.y + dy,
+                    z: pos.z + dz
+                });
+            }
+        }
+    }
+    return result;
+}

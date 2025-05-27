@@ -1,3 +1,4 @@
+import { Vector3 } from "@minecraft/server";
 import { custom_id_texture } from "./essentials/config";
 import { typeIdToID } from "./libs/typeIds";
 
@@ -50,4 +51,25 @@ export function convertTypeIdToAuxIcon(typeId: string, enchanted: boolean = fals
   }
 
   return 'textures/unknown';
+}
+
+export function getRadius1(pos: Vector3): Vector3[] {
+  const result: Vector3[] = [];
+
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dz = -1; dz <= 1; dz++) {
+        // Skip center block if not needed
+        if (dx === 0 && dy === 0 && dz === 0) continue;
+
+        result.push({
+          x: pos.x + dx,
+          y: pos.y + dy,
+          z: pos.z + dz
+        });
+      }
+    }
+  }
+
+  return result;
 }

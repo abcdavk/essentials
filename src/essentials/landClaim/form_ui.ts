@@ -96,7 +96,7 @@ export function handleSettingUI(player: Player, block: Block, dimension: Dimensi
     .toggle("Anti Creeper", { defaultValue: protectionData.settings.anti_creeper, tooltip: "When enable, creeper explosion in the area will be removed."})
     .toggle("Anti Arrow", { defaultValue: protectionData.settings.anti_arrow, tooltip: "When enable, the arrows in the area will be removed."})
     .toggle("Anti Splash Potion", { defaultValue: protectionData.settings.anti_splash_potion, tooltip: "When enable, splash potions in the area will be removed."})
-    .toggle("Anti Fireball", { defaultValue: protectionData.settings.anti_fireball, tooltip: "When enable, thrown fireball in the area will be removed."})
+    .toggle("Anti Fireball", { defaultValue: protectionData.settings.anti_fireball, tooltip: "When enable, will prevent fireballs from exploding in the area."})
     .toggle("Anti Wind Charge", { defaultValue: protectionData.settings.anti_wind_charge, tooltip: "When enable, thrown wind charge in the area will be removed."})
     .toggle("Anti End Crystal", { defaultValue: protectionData.settings.anti_end_crystal, tooltip: "When enable, active end crystal in the area will be removed."})
 

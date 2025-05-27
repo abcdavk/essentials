@@ -1,10 +1,11 @@
-import { Block, Dimension, Entity, EntityComponentTypes, Player, system, Vector3, world } from "@minecraft/server";
+import { Block, Dimension, Entity, EntityComponentTypes, Player, PlayerDimensionChangeAfterEvent, system, Vector3, world } from "@minecraft/server";
 import { handleBreakProtectionBlock, handleInteractProtectionBlock, handlePlaceProtectionBlock } from "./protection_block";
 import { AllowList, ExpiredDate, ProtectionData } from "../../interfaces";
 import { ActionFormData } from "@minecraft/server-ui";
 import { Expired, Protection } from "./classes";
 import { handleBuyPlotUI } from "./form_ui";
 import { claimedAreaOnlyBlocks, claimedAreaOnlyItems } from "./config";
+import { getRadius1 } from "../../utils";
 
 
 
@@ -93,13 +94,38 @@ function getPlayerProtectionData(player: Player, origin: Block | Entity) {
 
 const playerCooldowns = new Map<string, number>();
 
+// world.afterEvents.pistonActivate.subscribe((data) => {
+//   const { piston, block, isExpanding, dimension } = data;
+
+//   if (!isExpanding) return;
+
+//   for (const attachedBlock of piston.getAttachedBlocks()) {
+//     const isProtectionBlock = attachedBlock.typeId.includes("lc:protection_block");
+//     if (!isProtectionBlock) continue;
+
+//     const protectionData = new Protection().get(attachedBlock.center());
+//     const protectionEntities = dimension.getEntities({ type: "lc:protection_block" });
+
+//     const hasMatchingEntity = protectionEntities.some(entity =>
+//       protectionData.location.x === entity.location.x &&
+//       protectionData.location.y === entity.location.y &&
+//       protectionData.location.z === entity.location.z
+//     );
+
+//     if (!hasMatchingEntity) {
+//       dimension.getBlock(attachedBlock.location)?.setType("minecraft:air");
+//     }
+//   }
+// });
+
+
 world.beforeEvents.playerPlaceBlock.subscribe((data) => {
   const { player, block, permutationBeingPlaced: blockPlaced } = data;
   const isProtectionBlock = blockPlaced.type.id.includes("lc:protection_block");
 
   const { isOwner, allowList, isInside } = getPlayerProtectionData(player, block);
 
-  if (claimedAreaOnlyBlocks.includes(blockPlaced.type.id) && !isInside) {
+  if (claimedAreaOnlyBlocks.includes(blockPlaced.type.id) && !isInside && !player.hasTag("has_privilage")) {
     data.cancel = true;
     return;
   }
@@ -111,10 +137,14 @@ world.beforeEvents.playerPlaceBlock.subscribe((data) => {
 
   // If player placing protection block
   const expiredLength = new Expired().getPlayerExpiredLength(player.nameTag);
-  console.log(expiredLength)
+  // console.log(expiredLength)
   if (isProtectionBlock) {
     if (expiredLength <= 10) {
-      system.run(() => handlePlaceProtectionBlock(data));
+      let isCanceled = false;
+      system.run(() => {
+        isCanceled = handlePlaceProtectionBlock(data) ?? false;
+      });
+      data.cancel = isCanceled;
     } else {
       data.cancel = true;
       player.sendMessage('§cMax block protection reached!')
@@ -256,16 +286,34 @@ system.runInterval(() => {
     const protectionEntities = dimension.getEntities({ type: "lc:protection_block" });
 
     for (const protectionEntity of protectionEntities) {
-      const protectionBlock = dimension.getBlock(protectionEntity.location);
-      if (!protectionBlock) continue;
+      // if (!protectionBlock) continue;
+      const protectionId = protectionEntity.getDynamicProperty("lc:entity_id") as string;
 
-      const protectionData = new Protection().get(protectionBlock.center());
+      const protectionData = new Protection().getById(protectionId)
       if (!protectionData) continue;
+      protectionEntity.teleport(protectionData.location);
+
+      dimension.setBlockType(protectionData.location, `lc:protection_block_${protectionData.protectionSize}`);
+      const nearbyBlocks = getRadius1(protectionData.location);
+
+      for (const vec of nearbyBlocks) {
+        const block = dimension.getBlock(vec);
+        if (block && block.typeId.includes("lc:protection_block") &&
+          protectionData.location.x !== block.location.x &&
+          protectionData.location.y !== block.location.y &&
+          protectionData.location.z !== block.location.z
+        ) {
+          block.setType("minecraft:air")
+        }
+      }
+
       dimension.getEntities().forEach(entity => {
         const { x: cx, z: cz } = protectionEntity.location;
         const { x: px, z: pz } = entity.location;
         const half = protectionData.protectionSize / 2;
-  
+        // console.log(entity.typeId)
+
+        
         const isInside =
           px >= cx - half && px < cx + half &&
           pz >= cz - half && pz < cz + half;
@@ -277,7 +325,7 @@ system.runInterval(() => {
           if (entity.typeId === "minecraft:arrow" && protectionData.settings.anti_arrow) {
             entity.remove();
           }
-          if (entity.typeId === "minecraft:fireball" && protectionData.settings.anti_fireball) {
+          if (entity.typeId.includes("fireball") && protectionData.settings.anti_fireball) {
             entity.remove();
           }
           if (entity.typeId === "minecraft:wind_charge_projectile" && protectionData.settings.anti_wind_charge) {

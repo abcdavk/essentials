@@ -3,12 +3,15 @@ import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { Money } from "../money";
 import { QIDB } from "../../QIDB";
 export function adminMenuMainUI(player) {
+    let has_database_init = world.getDynamicProperty("ess:has_database_init") ?? false;
+    let has_privilage = player.hasTag("has_privilage");
     let form = new ActionFormData()
         .title('§f§0§1§r§l§0Admin Menu')
         .button('Set money')
         .button('Add money')
         .button('Remove money')
-        .button("Create Database");
+        .button(`${has_database_init ? '§a' : ''}Create Database`)
+        .button(`${has_privilage ? '§a' : ''}Allow self to interact with claimed area`);
     form.show(player).then(res => {
         if (res.selection === 0)
             adminMenuSetMoney(player);
@@ -18,8 +21,21 @@ export function adminMenuMainUI(player) {
             adminMenuRemoveMoney(player);
         if (res.selection === 3)
             adminMenuInit(player);
+        if (res.selection === 4)
+            adminAddPrivilage(player);
         // if (res.selection === 3) adminMenuRemoveTitle(player);
     });
+}
+export function adminAddPrivilage(player) {
+    let has_privilage = player.hasTag("has_privilage");
+    if (!has_privilage) {
+        player.sendMessage("§aNow you can place, break and interact with claimed area");
+        player.addTag("has_privilage");
+    }
+    else {
+        player.sendMessage("§cNo longer have the privilege");
+        player.removeTag("has_privilage");
+    }
 }
 export function adminMenuInit(player) {
     if (!world.getDynamicProperty("ess:has_database_init")) {

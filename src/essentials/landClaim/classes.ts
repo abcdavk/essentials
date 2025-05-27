@@ -1,5 +1,6 @@
 import { world, Player, Block, Vector3 } from "@minecraft/server";
 import { ExpiredDate, ProtectionData } from "../../interfaces";
+import { generateRandomID } from "../../utils";
 export class Expired {
   private key = "lc:expired";
 
@@ -131,9 +132,10 @@ export class Protection {
   //   }
   // }
 
-  init(playerName: string, blockLoc: Vector3, protectionSize: number) {
+  init(playerName: string, blockLoc: Vector3, protectionSize: number, id: string) {
     const defaultPlotName = `${playerName}'s plot`
     const protection_data: ProtectionData = {
+      id,
       nameTag: playerName,
       location: blockLoc,
       protectionSize: protectionSize,
@@ -189,6 +191,15 @@ export class Protection {
     return data[0];
   }
 
+  getById(id: string) {
+    let data = this.getProtectionData();
+    data = data.filter(protectionData => {
+      return (
+        protectionData.id === id
+      );
+    });
+    return data[0];
+  }
 
   getAll(filter?: string) {
     let rawData = this.getProtectionData();
