@@ -19,7 +19,7 @@ export function adminMenuMainUI(player: Player) {
   });
 }
 
-function adminMenuInit(player: Player) {
+export function adminMenuInit(player: Player) {
   if (!world.getDynamicProperty("ess:has_database_init")) {
     let Inventories = new QIDB('auction_house', 10, 270);
     player.sendMessage("Database created.");

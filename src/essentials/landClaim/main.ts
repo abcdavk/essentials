@@ -4,6 +4,7 @@ import { AllowList, ExpiredDate, ProtectionData } from "../../interfaces";
 import { ActionFormData } from "@minecraft/server-ui";
 import { Expired, Protection } from "./classes";
 import { handleBuyPlotUI } from "./form_ui";
+import { claimedAreaOnlyBlocks, claimedAreaOnlyItems } from "./config";
 
 
 
@@ -27,7 +28,7 @@ world.afterEvents.playerSpawn.subscribe(({
 function getPlayerProtectionData(player: Player, origin: Block | Entity) {
   const { dimension } = origin;
   const protectionBlocks = dimension.getEntities({ type: "lc:protection_block" });
-
+  let isInside = false
   for (const protection of protectionBlocks) {
     const protectionBlock = dimension.getBlock(protection.location);
     if (!protectionBlock) continue;
@@ -39,7 +40,7 @@ function getPlayerProtectionData(player: Player, origin: Block | Entity) {
     const { x: px, z: pz } = origin.location;
     const half = protectionData.protectionSize / 2;
 
-    const isInside =
+    isInside =
       px >= cx - half && px < cx + half &&
       pz >= cz - half && pz < cz + half;
 
@@ -66,6 +67,7 @@ function getPlayerProtectionData(player: Player, origin: Block | Entity) {
     return {
       isOwner,
       isFriend: !!matchedFriend,
+      isInside,
       allowList: matchedFriend ?? defaultPermission
     };
   }
@@ -73,6 +75,7 @@ function getPlayerProtectionData(player: Player, origin: Block | Entity) {
   return {
     isOwner: true,
     isFriend: true,
+    isInside,
     allowList: {
       nameTag: "",
       allow_place_block: true,
@@ -91,10 +94,16 @@ function getPlayerProtectionData(player: Player, origin: Block | Entity) {
 const playerCooldowns = new Map<string, number>();
 
 world.beforeEvents.playerPlaceBlock.subscribe((data) => {
-  const { player, block, permutationBeingPlaced } = data;
-  const isProtectionBlock = permutationBeingPlaced.type.id.includes("lc:protection_block");
+  const { player, block, permutationBeingPlaced: blockPlaced } = data;
+  const isProtectionBlock = blockPlaced.type.id.includes("lc:protection_block");
 
-  const { isOwner, allowList } = getPlayerProtectionData(player, block);
+  const { isOwner, allowList, isInside } = getPlayerProtectionData(player, block);
+
+  if (claimedAreaOnlyBlocks.includes(blockPlaced.type.id) && !isInside) {
+    data.cancel = true;
+    return;
+  }
+
   if (!isOwner && !allowList.allow_place_block) {
     data.cancel = true;
     return;
@@ -131,17 +140,20 @@ world.beforeEvents.playerBreakBlock.subscribe((data) => {
 });
 
 world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
-  const { block, player } = data;
+  const { block, player, itemStack } = data;
   const id = block.typeId.toLowerCase();
   const isProtectionBlock = id.includes("lc:protection_block");
 
-  const { isOwner, allowList } = getPlayerProtectionData(player, block);
+  const { isOwner, allowList, isInside } = getPlayerProtectionData(player, block);
 
-  // Hanya jika bukan owner
+  if (itemStack && claimedAreaOnlyItems.includes(itemStack.typeId) && !isInside) {
+    data.cancel = true;
+    return;
+  }
+
   if (!isOwner) {
     const protectionData = new Protection().get(block.center());
 
-    // Cek permission spesifik
     const permissionChecks: { keywords: string[]; permission: keyof AllowList }[] = [
       { keywords: ["button"], permission: "allow_button" },
       { keywords: ["tnt"], permission: "allow_tnt" },
@@ -160,7 +172,6 @@ world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
       }
     }
 
-    // Jika tidak termasuk permissionChecks, cek izin umum
     if (!matched) {
       const generalInteractKeywords = [
         "craft", "table", "anvil", "stand", "grind", "furnace", "smoker",
@@ -175,12 +186,10 @@ world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
       }
     }
 
-    // Penanganan UI Jual Tanah (hanya jika protection block & dijual)
     if (protectionData.isSell && isProtectionBlock) {
       const now = Date.now();
       const lastUsed = playerCooldowns.get(player.nameTag) ?? 0;
 
-      // Cooldown 260ms
       if (now - lastUsed >= 260) {
         playerCooldowns.set(player.nameTag, now);
         system.run(() => handleBuyPlotUI(player, block, block.dimension, protectionData));

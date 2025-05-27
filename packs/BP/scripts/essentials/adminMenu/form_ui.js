@@ -21,7 +21,7 @@ export function adminMenuMainUI(player) {
         // if (res.selection === 3) adminMenuRemoveTitle(player);
     });
 }
-function adminMenuInit(player) {
+export function adminMenuInit(player) {
     if (!world.getDynamicProperty("ess:has_database_init")) {
         let Inventories = new QIDB('auction_house', 10, 270);
         player.sendMessage("Database created.");

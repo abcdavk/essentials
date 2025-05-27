@@ -1,4 +1,4 @@
-import { system, world } from "@minecraft/server";
+import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus, EntityComponentTypes, EquipmentSlot, ItemStack, Player, system, world } from "@minecraft/server";
 import { hubMenu, hubMenuSetup } from "./hub_menu";
 import { jobMenuBlockBreakHandler, jobMenuFishingHandler, jobMenuInterval, jobMenuKillHandler, jobMenuSetup } from "./essentials/jobMenu/main";
 import { moneySetup } from "./essentials/money";
@@ -6,6 +6,8 @@ import { adminMenu } from "./essentials/adminMenu/main";
 import { playerTitleSetup, titleOnChat, titleSetup } from "./essentials/title/main";
 import { auctionHouseInterval, auctionHousePlayerSetup, auctionHouseSetup } from "./essentials/auctionHouse/main";
 import { teleportPlayerSetup, teleportSetup } from "./essentials/teleports/main";
+import { claimedAreaOnlyBlocks, claimedAreaOnlyItems } from "./essentials/landClaim/config";
+import { adminMenuInit, adminMenuMainUI } from "./essentials/adminMenu/form_ui";
 
 world.afterEvents.worldLoad.subscribe(() => {
   moneySetup();
@@ -63,4 +65,53 @@ system.runInterval(() => {
     jobMenuInterval(player);
   });
   auctionHouseInterval();
+});
+
+
+// Custom command registry
+system.beforeEvents.startup.subscribe(({ customCommandRegistry: ccr }) => {
+  ccr.registerEnum("ess:debug_enum", ["getAllClaimAreaOnlyBlocks", "getAllClaimAreaOnlyItems", "adminMenu", "getTypeId"]);
+
+  ccr.registerCommand(
+    {
+      name: "ess:debug",
+      description: "Essentials debug tools for dev.",
+      permissionLevel: CommandPermissionLevel.Admin,
+      mandatoryParameters: [{ name: "ess:debug_enum", type: CustomCommandParamType.Enum }]
+    },
+    (({ sourceEntity: player }, debug_enum) => {
+      const equip = player?.getComponent(EntityComponentTypes.Equippable);
+
+      if (debug_enum === "getAllClaimAreaOnlyBlocks") {
+        for (let i = 0; i < claimedAreaOnlyBlocks.length; i++) {
+          system.run(() => player?.runCommand(`give @s ${claimedAreaOnlyBlocks[i]}`));
+        }
+      }
+      if (debug_enum === "getAllClaimAreaOnlyItems") {
+        for (let i = 0; i < claimedAreaOnlyItems.length; i++) {
+          system.run(() => player?.runCommand(`give @s ${claimedAreaOnlyItems[i]}`));
+        }
+      }
+      if (debug_enum === "getTypeId") {
+        const itemHand = equip?.getEquipment(EquipmentSlot.Mainhand);
+        (player as Player).sendMessage(`${itemHand?.typeId}`)
+      }
+      if (debug_enum === "adminMenu") {
+        system.run(() => adminMenuMainUI(player as Player));        
+      }
+      return { status: CustomCommandStatus.Success, message: "Done." };
+    })
+  );
+
+  ccr.registerCommand(
+    {
+      name: "ess:init",
+      description: "Initialize Essentials database.",
+      permissionLevel: CommandPermissionLevel.Admin,
+    },
+    (({ sourceEntity: player }) => {
+      adminMenuInit(player as Player)
+      return { status: CustomCommandStatus.Success, message: "Done." };
+    })
+  )
 });
