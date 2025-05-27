@@ -35,11 +35,12 @@ export function truncateWithDots(text: string, maxLength: number = 12): string {
 
 const number_of_1_16_100_items = 2;
 
-export function convertTypeIdToAuxIcon(typeId: string): string {
+export function convertTypeIdToAuxIcon(typeId: string, enchanted: boolean = false): string {
   const ID = typeIdToID.get(typeId);
   
   if (ID !== undefined) {
-    const finalID = ((ID + (ID < 256 ? 0 : number_of_1_16_100_items)) * 65536);
+    let finalID = ((ID + (ID < 256 ? 0 : number_of_1_16_100_items)) * 65536);
+    finalID = enchanted ? finalID + 32768 : finalID;
     return `§aaux_item§a${finalID}`;
   }
 

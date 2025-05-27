@@ -28,10 +28,11 @@ export function truncateWithDots(text, maxLength = 12) {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 }
 const number_of_1_16_100_items = 2;
-export function convertTypeIdToAuxIcon(typeId) {
+export function convertTypeIdToAuxIcon(typeId, enchanted = false) {
     const ID = typeIdToID.get(typeId);
     if (ID !== undefined) {
-        const finalID = ((ID + (ID < 256 ? 0 : number_of_1_16_100_items)) * 65536);
+        let finalID = ((ID + (ID < 256 ? 0 : number_of_1_16_100_items)) * 65536);
+        finalID = enchanted ? finalID + 32768 : finalID;
         return `§aaux_item§a${finalID}`;
     }
     const texturePath = custom_id_texture[typeId];

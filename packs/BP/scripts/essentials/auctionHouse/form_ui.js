@@ -1,4 +1,4 @@
-import { EntityComponentTypes, EquipmentSlot, system, world } from "@minecraft/server";
+import { EntityComponentTypes, EquipmentSlot, ItemComponentTypes, system, world } from "@minecraft/server";
 import { ActionFormData, MessageFormData, ModalFormData } from "@minecraft/server-ui";
 import { AuctionHouse } from "./main";
 import { convertTypeIdToAuxIcon, formatNumber, itemTypeIdToName, truncateWithDots } from "../../utils";
@@ -23,12 +23,14 @@ export function auctionHouseSeller(player) {
         for (const entry of auction.auctionList) {
             const { id, amount, price } = entry;
             const soldItem = Inventories.get(id);
+            const soldItemEnchantments = soldItem?.getComponent(ItemComponentTypes.Enchantable)?.getEnchantments() ?? [];
             if (!soldItem)
                 continue;
+            const itemName = soldItem.nameTag !== undefined ? soldItem.nameTag : itemTypeIdToName(soldItem.typeId);
             const soldInfo = amount > 1
-                ? `x${amount}\n${itemTypeIdToName(soldItem.typeId)}`
-                : itemTypeIdToName(soldItem.typeId);
-            const icon = convertTypeIdToAuxIcon(soldItem.typeId);
+                ? `x${amount}\n${itemName}`
+                : itemName;
+            const icon = soldItemEnchantments.length > 0 ? convertTypeIdToAuxIcon(soldItem.typeId, true) : convertTypeIdToAuxIcon(soldItem.typeId);
             const buttonText = `§r${truncateWithDots(soldInfo)}\n§a$${parseFloat(price.toFixed(4))}`;
             form.button(buttonText, icon);
             auctionItems.push({ item: soldItem, seller: auction.nameTag, data: entry });
@@ -45,9 +47,10 @@ export function auctionHouseSeller(player) {
 }
 function auctionHouseEdit(player, soldItem, auctionSold) {
     const auctionHouse = new AuctionHouse();
+    const itemName = soldItem.nameTag !== undefined ? soldItem.nameTag : itemTypeIdToName(soldItem.typeId);
     const form = new ModalFormData()
-        .title(`Edit §l${itemTypeIdToName(soldItem.typeId)}`)
-        .toggle(`Remove and withdraw ${itemTypeIdToName(soldItem.typeId)}`)
+        .title(`Edit §l${itemName}`)
+        .toggle(`Remove and withdraw ${itemName}`)
         .textField("Edit price", "", { defaultValue: auctionSold.price.toString() });
     form.show(player).then(res => {
         if (!res.formValues || res.canceled)
@@ -78,12 +81,14 @@ export function auctionHouseCatalog(player) {
         for (let i = 0; i < auction.auctionList.length; i++) {
             const { id, amount, price } = auction.auctionList[i];
             const soldItem = Inventories.get(id);
+            const soldItemEnchantments = soldItem?.getComponent(ItemComponentTypes.Enchantable)?.getEnchantments() ?? [];
             if (!soldItem)
                 continue;
+            const itemName = soldItem.nameTag !== undefined ? soldItem.nameTag : itemTypeIdToName(soldItem.typeId);
             const soldInfo = amount > 1
-                ? `x${amount}\n${itemTypeIdToName(soldItem.typeId)}`
-                : itemTypeIdToName(soldItem.typeId);
-            const icon = convertTypeIdToAuxIcon(soldItem.typeId);
+                ? `x${amount}\n${itemName}`
+                : itemName;
+            const icon = soldItemEnchantments.length > 0 ? convertTypeIdToAuxIcon(soldItem.typeId, true) : convertTypeIdToAuxIcon(soldItem.typeId);
             const buttonText = `§r${truncateWithDots(soldInfo)}\n§a$${parseFloat(price.toFixed(4))}`;
             form.button(buttonText, icon);
             auctionItems.push({ item: soldItem, seller: auction.nameTag, data: auction.auctionList[i] });
@@ -100,10 +105,18 @@ export function auctionHouseCatalog(player) {
 }
 function auctionHouseBuy(player, seller, soldItem, auctionSold) {
     let { id, price, amount, expire } = auctionSold;
+    const itemName = soldItem.nameTag !== undefined ? soldItem.nameTag : itemTypeIdToName(soldItem.typeId);
+    const soldItemEnchantments = soldItem?.getComponent(ItemComponentTypes.Enchantable)?.getEnchantments() ?? [];
+    let enchantList = ['Enchantment:'];
+    for (const enchant of soldItemEnchantments) {
+        enchantList.push(`§7 - §9${itemTypeIdToName(enchant.type.id)} ${enchant.level}§r`);
+    }
+    const enchantInfo = soldItemEnchantments.length > 0 ? enchantList.join('\n') + '\n' : '';
+    const lineSpace = "\n".repeat(8 - soldItemEnchantments.length);
     const buyButton = player.nameTag === seller ? `§m§0§0§7Buy for §l$${formatNumber(price)}` : `Buy for §l$${formatNumber(price)}`;
     let form = new ActionFormData()
-        .title(`§f§0§1§r§0Buy §l${itemTypeIdToName(soldItem.typeId)}`)
-        .body(`§7Item: §b${itemTypeIdToName(soldItem.typeId)}§7\nAmount: §e${amount}§7\nPrice: §a$${price}§7\n\nExpire at: §e${new Date(expire).toDateString()}§7\nSeller: §e${seller}\n\n\n\n\n\n\n\n\n\n`)
+        .title(`§f§0§1§r§0Buy §l${itemName}`)
+        .body(`§7Item: §b${itemName}§7\n${enchantInfo}§7\nAmount: §e${amount}§7\nPrice: §a$${price}§7\n\nExpire at: §e${new Date(expire).toDateString()}§7\nSeller: §e${seller}${lineSpace}`)
         .button(buyButton);
     form.show(player).then(res => {
         if (res.selection === 0) {
@@ -112,8 +125,8 @@ function auctionHouseBuy(player, seller, soldItem, auctionSold) {
                 if (!isCanceled) {
                     new AuctionHouse().remove(seller, id);
                     new Money().add(seller, price);
-                    player.runCommand(`tellraw ${seller} {"rawtext":[{"text":"§b${player.nameTag}§r buys §b${amount}x ${itemTypeIdToName(soldItem.typeId)}§r from you for §a$${price}"}]}`);
-                    player.sendMessage(`Successfully purchased §e${amount}x§r §b${itemTypeIdToName(soldItem.typeId)}§r for §a$${price.toFixed(2)}§r`);
+                    player.runCommand(`tellraw ${seller} {"rawtext":[{"text":"§b${player.nameTag}§r buys §b${amount}x ${itemName}§r from you for §a$${price}"}]}`);
+                    player.sendMessage(`Successfully purchased §e${amount}x§r §b${itemName}§r for §a$${price.toFixed(2)}§r`);
                     player.dimension.spawnItem(soldItem, player.location);
                 }
                 else {
@@ -168,7 +181,7 @@ export function auctionHouseSellItem(player) {
     }
 }
 function auctionHouseSellOption(player, itemStack) {
-    const itemName = itemTypeIdToName(itemStack.typeId);
+    const itemName = itemStack.nameTag !== undefined ? itemStack.nameTag : itemTypeIdToName(itemStack.typeId);
     // const inv = player.getComponent(EntityComponentTypes.Inventory);
     // const con = inv?.container;
     // if (!inv || !con) return;
