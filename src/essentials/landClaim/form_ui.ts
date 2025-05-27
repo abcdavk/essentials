@@ -1,6 +1,6 @@
 import { Block, Dimension, Player, world } from "@minecraft/server";
 import { Protection } from "./classes";
-import { AllowList, ProtectionData } from "../../interfaces";
+import { AllowList, ProtectionData, Settings } from "../../interfaces";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { Money } from "../money";
 
@@ -92,19 +92,29 @@ export function handleSettingUI(player: Player, block: Block, dimension: Dimensi
     .toggle("Show Boundaries", { defaultValue: protectionData.settings.showBoundaries, tooltip: "When enable, will display particle animation around the area."})
     .toggle("Anti Hostile", { defaultValue: protectionData.settings.anti_hostile, tooltip: "When enable, hostiles in the area will be removed."})
     .toggle("Anti TNT", { defaultValue: protectionData.settings.anti_tnt, tooltip: "When enable, active tnt in the area will be removed."})
+    .toggle("Anti Minecart TNT", { defaultValue: protectionData.settings.anti_minecart_tnt, tooltip: "When enable, active minecart tnt in the area will be removed."})
     .toggle("Anti Creeper", { defaultValue: protectionData.settings.anti_creeper, tooltip: "When enable, creeper explosion in the area will be removed."})
     .toggle("Anti Arrow", { defaultValue: protectionData.settings.anti_arrow, tooltip: "When enable, the arrows in the area will be removed."})
-    .toggle("Anti splash potion", { defaultValue: protectionData.settings.anti_splash_potion, tooltip: "When enable, the splash potions in the area will be removed."});
+    .toggle("Anti Splash Potion", { defaultValue: protectionData.settings.anti_splash_potion, tooltip: "When enable, splash potions in the area will be removed."})
+    .toggle("Anti Fireball", { defaultValue: protectionData.settings.anti_fireball, tooltip: "When enable, thrown fireball in the area will be removed."})
+    .toggle("Anti Wind Charge", { defaultValue: protectionData.settings.anti_wind_charge, tooltip: "When enable, thrown wind charge in the area will be removed."})
+    .toggle("Anti End Crystal", { defaultValue: protectionData.settings.anti_end_crystal, tooltip: "When enable, active end crystal in the area will be removed."})
+
   form.show(player).then(res => {
     if (res.formValues) {
+      const [plotName, showBoundaries, anti_hostile, anti_tnt, anti_minecart_tnt, anti_creeper, anti_arrow, anti_splash_potion, anti_fireball, anti_wind_charge, anti_end_crystal] = res.formValues as any[];
       protectionData.settings = {
-        plotName: res.formValues[0] as string,
-        showBoundaries: res.formValues[1] as boolean,
-        anti_hostile: res.formValues[2] as boolean,
-        anti_tnt: res.formValues[3] as boolean,
-        anti_creeper: res.formValues[4] as boolean,
-        anti_arrow: res.formValues[5] as boolean,
-        anti_splash_potion: res.formValues[6] as boolean,
+        plotName,
+        showBoundaries,
+        anti_hostile,
+        anti_tnt,
+        anti_minecart_tnt,
+        anti_creeper,
+        anti_arrow,
+        anti_splash_potion,
+        anti_fireball, 
+        anti_wind_charge, 
+        anti_end_crystal
       }
       new Protection().set(block.center(), protectionData);
     }

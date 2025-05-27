@@ -45,6 +45,7 @@ system.runInterval(() => {
     });
     auctionHouseInterval();
 });
+// Custom command registry
 system.beforeEvents.startup.subscribe(({ customCommandRegistry: ccr }) => {
     ccr.registerEnum("ess:debug_enum", ["getAllClaimAreaOnlyBlocks", "getAllClaimAreaOnlyItems", "adminMenu", "getTypeId"]);
     ccr.registerCommand({

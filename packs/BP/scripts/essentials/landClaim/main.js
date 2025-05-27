@@ -231,6 +231,18 @@ system.runInterval(() => {
                     if (entity.typeId === "minecraft:arrow" && protectionData.settings.anti_arrow) {
                         entity.remove();
                     }
+                    if (entity.typeId === "minecraft:fireball" && protectionData.settings.anti_fireball) {
+                        entity.remove();
+                    }
+                    if (entity.typeId === "minecraft:wind_charge_projectile" && protectionData.settings.anti_wind_charge) {
+                        entity.remove();
+                    }
+                    if (entity.typeId === "minecraft:tnt_minecart" && protectionData.settings.anti_minecart_tnt) {
+                        entity.kill();
+                    }
+                    if (entity.typeId === "minecraft:ender_crystal" && protectionData.settings.anti_end_crystal) {
+                        entity.remove();
+                    }
                     if (entity.getComponent(EntityComponentTypes.TypeFamily)?.hasTypeFamily("monster") && protectionData.settings.anti_hostile) {
                         entity.remove();
                     }

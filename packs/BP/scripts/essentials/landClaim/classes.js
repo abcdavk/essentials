@@ -120,10 +120,14 @@ export class Protection {
                 plotName: defaultPlotName,
                 showBoundaries: true,
                 anti_tnt: false,
+                anti_minecart_tnt: false,
                 anti_creeper: false,
                 anti_arrow: false,
                 anti_splash_potion: false,
-                anti_hostile: false
+                anti_hostile: false,
+                anti_fireball: false,
+                anti_wind_charge: false,
+                anti_end_crystal: false
             },
             allowList: []
         };

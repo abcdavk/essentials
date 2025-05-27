@@ -31,10 +31,14 @@ export type Settings = {
   plotName: string,
   showBoundaries: boolean,
   anti_tnt: boolean,
+  anti_minecart_tnt: boolean,
   anti_creeper: boolean,
   anti_arrow: boolean,
   anti_splash_potion: boolean,
-  anti_hostile: boolean
+  anti_hostile: boolean,
+  anti_fireball: boolean,
+  anti_end_crystal: boolean,
+  anti_wind_charge: boolean,
 }
 
 export type ProtectionData = {
