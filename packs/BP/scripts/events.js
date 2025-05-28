@@ -8,6 +8,7 @@ import { auctionHouseInterval, auctionHousePlayerSetup } from "./essentials/auct
 import { teleportPlayerSetup, teleportSetup } from "./essentials/teleports/main";
 import { claimedAreaOnlyBlocks, claimedAreaOnlyItems } from "./essentials/landClaim/config";
 import { adminAddPrivilage, adminMenuInit, adminMenuMainUI } from "./essentials/adminMenu/form_ui";
+import { limitSpawnEntity } from "./essentials/entitySpawnLimit/main";
 world.afterEvents.worldLoad.subscribe(() => {
     moneySetup();
     titleSetup();
@@ -34,6 +35,7 @@ world.afterEvents.playerBreakBlock.subscribe(({ brokenBlockPermutation, player }
 });
 world.afterEvents.entitySpawn.subscribe(({ entity }) => {
     jobMenuFishingHandler(entity);
+    limitSpawnEntity(entity);
 });
 world.afterEvents.entityDie.subscribe(({ damageSource, deadEntity }) => {
     jobMenuKillHandler(damageSource, deadEntity);
@@ -47,13 +49,19 @@ system.runInterval(() => {
 });
 // Custom command registry
 system.beforeEvents.startup.subscribe(({ customCommandRegistry: ccr }) => {
-    ccr.registerEnum("ess:debug_enum", ["getAllClaimAreaOnlyBlocks", "getAllClaimAreaOnlyItems", "adminMenu", "getTypeId", "togglePrivilege"]);
+    ccr.registerEnum("ess:debug_enum", ["getAllClaimAreaOnlyBlocks", "getAllClaimAreaOnlyItems", "adminMenu", "getTypeId", "togglePrivilege", "spawnEntity", "removeEntity"]);
     ccr.registerCommand({
         name: "ess:debug",
         description: "Essentials debug tools for dev.",
         permissionLevel: CommandPermissionLevel.Admin,
-        mandatoryParameters: [{ name: "ess:debug_enum", type: CustomCommandParamType.Enum }]
-    }, (({ sourceEntity: player }, debug_enum) => {
+        mandatoryParameters: [
+            { name: "ess:debug_enum", type: CustomCommandParamType.Enum }
+        ],
+        optionalParameters: [
+            { name: "arg1", type: CustomCommandParamType.String },
+            { name: "arg2", type: CustomCommandParamType.Integer }
+        ]
+    }, (({ sourceEntity: player }, debug_enum, arg1, arg2) => {
         const equip = player?.getComponent(EntityComponentTypes.Equippable);
         if (debug_enum === "getAllClaimAreaOnlyBlocks") {
             for (let i = 0; i < claimedAreaOnlyBlocks.length; i++) {
@@ -74,6 +82,24 @@ system.beforeEvents.startup.subscribe(({ customCommandRegistry: ccr }) => {
         }
         if (debug_enum === "togglePrivilege") {
             system.run(() => adminAddPrivilage(player));
+        }
+        if (debug_enum === "spawnEntity") {
+            system.run(() => {
+                for (let i = 0; i < arg2; i++) {
+                    player?.dimension.spawnEntity(arg1, player.location);
+                }
+            });
+        }
+        if (debug_enum === "removeEntity") {
+            const allEntities = player?.dimension.getEntities() ?? [];
+            system.run(() => {
+                for (let i = 0; i < allEntities.length; i++) {
+                    if (allEntities[i].typeId !== "minecraft:player") {
+                        allEntities[i].remove();
+                    }
+                    ;
+                }
+            });
         }
         return { status: CustomCommandStatus.Success, message: "Done." };
     }));

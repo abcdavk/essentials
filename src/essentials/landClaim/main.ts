@@ -317,20 +317,25 @@ system.runInterval(() => {
 
       const protectionData = new Protection().getById(protectionId)
       if (!protectionData) continue;
-      protectionEntity.teleport(protectionData.location);
 
-      dimension.setBlockType(protectionData.location, `lc:protection_block_${protectionData.protectionSize}`);
-      const nearbyBlocks = getRadius1(protectionData.location);
-
-      for (const vec of nearbyBlocks) {
-        const block = dimension.getBlock(vec);
-        if (block && block.typeId.includes("lc:protection_block") &&
-          protectionData.location.x !== block.location.x &&
-          protectionData.location.y !== block.location.y &&
-          protectionData.location.z !== block.location.z
-        ) {
-          block.setType("minecraft:air")
+      try {
+        protectionEntity.teleport(protectionData.location);
+  
+        dimension.setBlockType(protectionData.location, `lc:protection_block_${protectionData.protectionSize}`);
+        const nearbyBlocks = getRadius1(protectionData.location);
+  
+        for (const vec of nearbyBlocks) {
+          const block = dimension.getBlock(vec);
+          if (block && block.typeId.includes("lc:protection_block") &&
+            protectionData.location.x !== block.location.x &&
+            protectionData.location.y !== block.location.y &&
+            protectionData.location.z !== block.location.z
+          ) {
+            block.setType("minecraft:air")
+          }
         }
+      } catch (error) {
+        
       }
 
       dimension.getEntities().forEach(entity => {
