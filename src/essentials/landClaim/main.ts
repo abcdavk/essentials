@@ -135,22 +135,48 @@ world.beforeEvents.playerPlaceBlock.subscribe((data) => {
     return;
   }
 
-  // If player placing protection block
   const expiredLength = new Expired().getPlayerExpiredLength(player.nameTag);
-  // console.log(expiredLength)
+
   if (isProtectionBlock) {
     if (expiredLength <= 10) {
-      let isCanceled = false;
-      system.run(() => {
-        isCanceled = handlePlaceProtectionBlock(data) ?? false;
+      
+      const newCenter = block.center();
+      const allProtections = new Protection().getAll();
+      const protectionSize = parseInt(blockPlaced.type.id.split("_")[2]);
+      const nonOwnerAddition = isOwner ? 0 : 12;
+
+      const newHalf = protectionSize / 2;
+
+      const overlapFound = allProtections.some((p: ProtectionData) => {
+        const isSameOwner = p.nameTag === player.nameTag;
+
+        const existingHalf = p.protectionSize / 2;
+        const distanceX = Math.abs(newCenter.x - p.location.x);
+        const distanceZ = Math.abs(newCenter.z - p.location.z);
+
+        const requiredDistance = newHalf + existingHalf + (isSameOwner ? 0 : nonOwnerAddition);
+
+        return (
+          distanceX < requiredDistance &&
+          distanceZ < requiredDistance
+        );
       });
-      data.cancel = isCanceled;
+
+
+      if (overlapFound) {
+        player.sendMessage("§cCannot place protection block here. Overlapping with another claim.");
+        data.cancel = true;
+      } else {
+        system.run(() => handlePlaceProtectionBlock(data));
+      }
+
     } else {
       data.cancel = true;
-      player.sendMessage('§cMax block protection reached!')
+      player.sendMessage("§cMax block protection reached!");
     }
   }
 });
+
 
 
 world.beforeEvents.playerBreakBlock.subscribe((data) => {
