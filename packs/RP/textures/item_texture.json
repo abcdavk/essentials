@@ -1,0 +1,12 @@
+{
+  "resource_pack_name": "vanilla",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "admin_menu": {
+      "textures": "textures/items/admin_menu"
+    },
+    "hub_menu": {
+      "textures": "textures/items/hub_menu"
+    }
+  }
+}

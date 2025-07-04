@@ -1,0 +1,32 @@
+{
+    "format_version": "1.16.0",
+    "minecraft:entity": {
+        "description": {
+            "identifier": "lc:protection_block",
+            "is_spawnable": false,
+            "is_summonable": true,
+            "is_experimental": false
+        },
+        "components": {
+            "minecraft:collision_box": {
+                "width": 0.5,
+                "height": 1
+            },
+            "minecraft:type_family": { "family": ["protection_block"] },
+            "minecraft:health": { "value": 10, "max": 10 },
+            "minecraft:damage_sensor": {
+                "triggers": { "cause": "all", "deals_damage": false }
+            },
+            "minecraft:knockback_resistance": {
+                "value": 100
+            },
+            "minecraft:pushable": {
+                "is_pushable": false,
+                "is_pushable_by_piston": false
+            },
+            "minecraft:nameable": {
+                "always_show": true
+            }
+        }
+    }
+}

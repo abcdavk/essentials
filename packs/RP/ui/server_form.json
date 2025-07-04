@@ -1,0 +1,988 @@
+{
+    "namespace": "server_form",
+    "third_party_server_screen@common.base_screen": {
+        "$screen_content": "server_form.server_form",
+        "button_mappings": [
+            {
+                "from_button_id": "button.menu_cancel",
+                "to_button_id": "button.menu_exit",
+                "mapping_type": "global"
+            }
+        ]
+    },
+    "server_form": {
+        "type": "panel",
+        "size": [
+            "100%",
+            "100%"
+        ],
+        "controls": [
+            {
+                "server_form_factory": {
+                    "type": "factory",
+                    "control_ids": {
+                        "long_form": "@server_form.long_form",
+                        "custom_form": "@server_form.custom_form"
+                    }
+                }
+            }
+        ]
+    },
+    "long_form@starlib_pkg_screen_template.screen": {
+        "$SCREEN_TEMPLATE_fade_enabled": true,
+
+        
+
+        "$FORM_TEMPLATE_appear_sub_contents_padding": true,
+        "$FORM_TEMPLATE_appear_header_padding": false,
+        "$FORM_TEMPLATE_background_texture": "textures/ui/background",
+        "$FORM_TEMPLATE_between_contents_padding_size": [
+            0,
+            1
+        ],
+        "$FORM_TEMPLATE_content_size": [
+            "100% - 14px",
+            "100% - 14px"
+        ],
+
+        "$BUTTON_STYLE_default_texture": "textures/ui/button",
+        "$COMMON_BUTTON_hover_control": "server_form.hover",
+        "$COMMON_BUTTON_pressed_control": "server_form.hover",
+        
+        "$BUTTON_STYLE_default_variable_texture": "textures/ui/button",
+        "$COMMON_BUTTON_style_control": "starlib_pkg_button_style.disabled_variable_button_style",
+        "$COMMON_BUTTON_panel_control": "starlib_pkg_button_common.disabled_variable_button_panel",
+        "$BUTTON_STYLE_disabled_variable_key": "§m§0§0",
+        "$BUTTON_STYLE_disabled_variable_texture": "textures/ui/button_hover",
+        
+        "$forms_holder_controls": [
+            // {
+            //     "form@global.reverse_title_binding": {
+            //         "$form_size": [
+            //             280,
+            //             225
+            //         ],
+            //         "$SCROLLING_CONTENT_form_text_control": "server_form.form_text",
+            //         "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+            //         "$BORDERED_BUTTON_background_control": "global.empty_panel",
+            //         "$SCROLLING_CONTENT_additional_content_margins_size": [
+            //             0,
+            //             1
+            //         ],
+            //         "$key": "§f§0§0",
+            //         "$control": "starlib_pkg_screen_template.form_template",
+            //         "size": [
+            //             "100%c",
+            //             "100%c"
+            //         ]
+            //     }
+            // },
+            {
+                "showalljobs@global.title_binding": {
+                    "$form_size": [
+                        500,
+                        160
+                    ],
+                    "$scrolling_content": "server_form.showalljobs_buttons_grid",
+                    
+                    "$CLOSE_BUTTON_size": [
+                        "100%",
+                        18
+                    ],
+
+                    "$HEADER_TEMPLATE_close_button_control": "global.empty_panel",
+                    "$FORM_TEMPLATE_sub_content_control": "starlib_pkg_screen_common.async_close_button",
+                    "$CLOSE_BUTTON_text_enabled": true,
+                    "$CLOSE_BUTTON_default_control": "server_form.close_button",
+                    "$CLOSE_BUTTON_hover_control": "server_form.hover",
+                    "$CLOSE_BUTTON_pressed_control": "server_form.hover",
+                    "$CLOSE_BUTTON_text_offset": [
+                        0,
+                        -2
+                    ],
+
+                    "$HEADER_TEMPLATE_style_control": "server_form.header",
+                    "$CONTENT_between_contents_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$CUBIC_BUTTON_image_size": [
+                        "100%",
+                        "100%-10px"
+                    ],
+                    "$CUBIC_BUTTON_bottom_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$key": "§f§0§0",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "$grid_item": "server_form.grid_button",
+                    "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
+                }
+            },
+            {
+                "landclaim@global.title_binding": {
+                    "$form_size": [
+                        300,
+                        155
+                    ],
+                    "$scrolling_content": "server_form.landclaim_buttons_grid",
+                    
+                    "$CLOSE_BUTTON_size": [
+                        "100%",
+                        18
+                    ],
+
+                    "$HEADER_TEMPLATE_close_button_control": "global.empty_panel",
+                    "$FORM_TEMPLATE_sub_content_control": "starlib_pkg_screen_common.async_close_button",
+                    "$CLOSE_BUTTON_text_enabled": true,
+                    "$CLOSE_BUTTON_default_control": "server_form.close_button",
+                    "$CLOSE_BUTTON_hover_control": "server_form.hover",
+                    "$CLOSE_BUTTON_pressed_control": "server_form.hover",
+                    "$CLOSE_BUTTON_text_offset": [
+                        0,
+                        -2
+                    ],
+
+                    "$HEADER_TEMPLATE_style_control": "server_form.header",
+                    "$CONTENT_between_contents_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$CUBIC_BUTTON_image_size": [
+                        "100%",
+                        "100%-10px"
+                    ],
+                    "$CUBIC_BUTTON_bottom_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$key": "§f§2§4",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "$grid_item": "server_form.grid_button",
+                    "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
+                }
+            },
+            {
+                "hubmenu@global.title_binding": {
+                    "$form_size": [
+                        300,
+                        155
+                    ],
+                    "$scrolling_content": "server_form.hubmenu_buttons_grid",
+                    
+                    "$CLOSE_BUTTON_size": [
+                        "100%",
+                        18
+                    ],
+
+                    "$HEADER_TEMPLATE_close_button_control": "global.empty_panel",
+                    "$FORM_TEMPLATE_sub_content_control": "starlib_pkg_screen_common.async_close_button",
+                    "$CLOSE_BUTTON_text_enabled": true,
+                    "$CLOSE_BUTTON_default_control": "server_form.close_button",
+                    "$CLOSE_BUTTON_hover_control": "server_form.hover",
+                    "$CLOSE_BUTTON_pressed_control": "server_form.hover",
+                    "$CLOSE_BUTTON_text_offset": [
+                        0,
+                        -2
+                    ],
+
+                    "$HEADER_TEMPLATE_style_control": "server_form.header",
+                    "$CONTENT_between_contents_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$CUBIC_BUTTON_image_size": [
+                        "100%",
+                        "100%-10px"
+                    ],
+                    "$CUBIC_BUTTON_bottom_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$key": "§f§2§0",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "$grid_item": "server_form.grid_button",
+                    "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
+                }
+            },
+            {
+                "tpmenu@global.title_binding": {
+                    "$form_size": [
+                        355,
+                        155
+                    ],
+                    "$scrolling_content": "server_form.tpmenu_buttons_grid",
+                    
+                    "$CLOSE_BUTTON_size": [
+                        "100%",
+                        18
+                    ],
+
+                    "$HEADER_TEMPLATE_close_button_control": "global.empty_panel",
+                    "$FORM_TEMPLATE_sub_content_control": "starlib_pkg_screen_common.async_close_button",
+                    "$CLOSE_BUTTON_text_enabled": true,
+                    "$CLOSE_BUTTON_default_control": "server_form.close_button",
+                    "$CLOSE_BUTTON_hover_control": "server_form.hover",
+                    "$CLOSE_BUTTON_pressed_control": "server_form.hover",
+                    "$CLOSE_BUTTON_text_offset": [
+                        0,
+                        -2
+                    ],
+
+                    "$HEADER_TEMPLATE_style_control": "server_form.header",
+                    "$CONTENT_between_contents_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$CUBIC_BUTTON_image_size": [
+                        "100%",
+                        "100%-10px"
+                    ],
+                    "$CUBIC_BUTTON_bottom_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$key": "§f§2§5",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "$grid_item": "server_form.grid_button",
+                    "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
+                }
+            },
+            {
+                "hubsettings@global.title_binding": {
+                    "$form_size": [
+                        200,
+                        155
+                    ],
+                    "$scrolling_content": "server_form.hubsettings_buttons_grid",
+                    
+                    "$CLOSE_BUTTON_size": [
+                        "100%",
+                        18
+                    ],
+
+                    "$HEADER_TEMPLATE_close_button_control": "global.empty_panel",
+                    "$FORM_TEMPLATE_sub_content_control": "starlib_pkg_screen_common.async_close_button",
+                    "$CLOSE_BUTTON_text_enabled": true,
+                    "$CLOSE_BUTTON_default_control": "server_form.close_button",
+                    "$CLOSE_BUTTON_hover_control": "server_form.hover",
+                    "$CLOSE_BUTTON_pressed_control": "server_form.hover",
+                    "$CLOSE_BUTTON_text_offset": [
+                        0,
+                        -2
+                    ],
+
+                    "$HEADER_TEMPLATE_style_control": "server_form.header",
+                    "$CONTENT_between_contents_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$CUBIC_BUTTON_image_size": [
+                        "100%",
+                        "100%-10px"
+                    ],
+                    "$CUBIC_BUTTON_bottom_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$key": "§f§2§1",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "$grid_item": "server_form.grid_button",
+                    "$BUTTON_STYLE_default_variable_texture": "textures/blocks/none",
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
+                }
+            },
+            {
+                "shop@global.title_binding": {
+                    "$form_size": [
+                        400,
+                        300
+                    ],
+                    "$scrolling_content": "server_form.shop_buttons_grid",
+                    
+                    "$CLOSE_BUTTON_size": [
+                        "100%",
+                        18
+                    ],
+
+                    "$HEADER_TEMPLATE_close_button_control": "global.empty_panel",
+                    "$HEADER_TEMPLATE_title_control": "server_form.shop_title",
+                    "$FORM_TEMPLATE_sub_content_control": "starlib_pkg_screen_common.async_close_button",
+                    "$CLOSE_BUTTON_text_enabled": true,
+                    "$CLOSE_BUTTON_default_control": "server_form.close_button",
+                    "$CLOSE_BUTTON_hover_control": "server_form.hover",
+                    "$CLOSE_BUTTON_pressed_control": "server_form.hover",
+                    "$CLOSE_BUTTON_text_offset": [
+                        0,
+                        -2
+                    ],
+
+                    "$HEADER_TEMPLATE_style_control": "server_form.header_shop",
+                    "$CONTENT_between_contents_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$CUBIC_BUTTON_image_size": [
+                        "75%",
+                        "75%"
+                    ],
+                    "$CUBIC_BUTTON_bottom_padding_size": [
+                        0,
+                        2
+                    ],
+                    "$CUBIC_BUTTON_content_size": [
+                        "100%-10px",
+                        "100%-10px"
+                    ],
+                    "$key": "§f§2§2",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "$grid_item": "server_form.grid_button",
+                    // "$BUTTON_STYLE_default_texture": "textures/ui/button_hover",
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
+                }
+            },
+            {
+                "plotlist@global.title_binding": {
+                    "$form_size": [
+                        400,
+                        300
+                    ],
+                    "$scrolling_content": "server_form.plotlist_buttons_grid",
+                    
+                    "$CLOSE_BUTTON_size": [
+                        "100%",
+                        18
+                    ],
+
+                    "$HEADER_TEMPLATE_close_button_control": "global.empty_panel",
+                    "$HEADER_TEMPLATE_title_control": "server_form.shop_title",
+                    "$FORM_TEMPLATE_sub_content_control": "starlib_pkg_screen_common.async_close_button",
+                    "$CLOSE_BUTTON_text_enabled": true,
+                    "$CLOSE_BUTTON_default_control": "server_form.close_button",
+                    "$CLOSE_BUTTON_hover_control": "server_form.hover",
+                    "$CLOSE_BUTTON_pressed_control": "server_form.hover",
+                    "$CLOSE_BUTTON_text_offset": [
+                        0,
+                        -2
+                    ],
+
+                    "$HEADER_TEMPLATE_style_control": "server_form.header_shop",
+                    "$CONTENT_between_contents_padding_size": [
+                        0,
+                        0
+                    ],
+                    "$CUBIC_BUTTON_image_size": [
+                        "75%",
+                        "75%"
+                    ],
+                    "$CUBIC_BUTTON_bottom_padding_size": [
+                        0,
+                        2
+                    ],
+                    "$CUBIC_BUTTON_content_size": [
+                        "100%-10px",
+                        "100%-10px"
+                    ],
+                    "$key": "§f§2§3",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "$grid_item": "server_form.grid_button",
+                    // "$BUTTON_STYLE_default_texture": "textures/ui/button_hover",
+                    "$COMMON_BUTTON_hover_control": "server_form.hover",
+                    "$COMMON_BUTTON_pressed_control": "server_form.hover"
+                }
+            },
+            {
+                "title_preview@global.title_binding": {
+                    "$form_size": [
+                        240,
+                        200
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.title_preview_header",
+                    "$HEADER_TEMPLATE_title_control": "server_form.title_preview_title",
+                    "$FORM_TEMPLATE_background_control": "server_form.title_preview_background",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_title_preview_text",
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+                    "$CONTENT_between_contents_padding_size": [
+                        10,
+                        0
+                    ],
+                    "$COMMON_PAPERDOLL_size": [
+                        40,
+                        "100%"
+                    ],
+                    "$ROTATION_AREA_size": [
+                        0,
+                        0
+                    ],
+                    "$PAPERDOLL_offset": [
+                        120,
+                        -40
+                    ],
+                    "$CONTENT_enable_paperdoll": true,
+                    "$key": "§f§3§0",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "offset": [
+                        -20,
+                        0
+                    ]
+                }
+            },
+            {
+                "title_menu@global.title_binding": {
+                    "$form_size": [
+                        280,
+                        200
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.title_menu_header",
+                    "$HEADER_TEMPLATE_title_control": "server_form.title_menu_title",
+                    "$FORM_TEMPLATE_background_control": "server_form.title_menu_background",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_title_menu_text",
+                    
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+                    "$CONTENT_between_contents_padding_size": [
+                        100,
+                        0
+                    ],
+                    "$COMMON_PAPERDOLL_size": [
+                        60,
+                        "100%"
+                    ],
+                    "$ROTATION_AREA_size": [
+                        0,
+                        0
+                    ],
+                    "$PAPERDOLL_offset": [
+                        68,
+                        -20
+                    ],
+                    "$CONTENT_enable_paperdoll": true,
+                    "$key": "§f§3§1",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ],
+                    "offset": [
+                        -20,
+                        0
+                    ]
+                }
+            },
+            {
+                "main_menu@global.title_binding": {
+                    "$form_size": [
+                        190,
+                        225
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.header",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_text",
+
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+
+                    "$key": "§f§0§1",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ]
+                }
+            },
+            {
+                "job_farm@global.title_binding": {
+                    "$form_size": [
+                        190,
+                        225
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.header_light_blue",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_text",
+
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+
+                    "$key": "§f§1§0",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ]
+                }
+            },
+            {
+                "job_kill@global.title_binding": {
+                    "$form_size": [
+                        190,
+                        225
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.header_green",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_text",
+
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+
+                    "$key": "§f§1§1",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ]
+                }
+            },
+            {
+                "job_dig@global.title_binding": {
+                    "$form_size": [
+                        190,
+                        225
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.header_purple",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_text",
+
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+
+                    "$key": "§f§1§2",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ]
+                }
+            },
+            {
+                "job_fish@global.title_binding": {
+                    "$form_size": [
+                        190,
+                        225
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.header_red",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_text",
+
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+
+                    "$key": "§f§1§3",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ]
+                }
+            },
+            {
+                "job_mine@global.title_binding": {
+                    "$form_size": [
+                        190,
+                        225
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.header_blue",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_text",
+
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+
+                    "$key": "§f§1§4",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ]
+                }
+            },
+            {
+                "job_mine@global.title_binding": {
+                    "$form_size": [
+                        190,
+                        225
+                    ],
+                    "$HEADER_TEMPLATE_style_control": "server_form.header_yellow",
+                    "$SCROLLING_CONTENT_form_text_control": "server_form.form_text",
+
+                    "$button_item_control": "starlib_pkg_button_templates.horizontal_button_template",
+                    "$BORDERED_BUTTON_background_control": "global.empty_panel",
+
+                    "$key": "§f§1§5",
+                    "$control": "starlib_pkg_screen_template.form_template",
+                    "size": [
+                        "100%c",
+                        "100%c"
+                    ]
+                }
+            }
+        ]
+    },
+    "showalljobs_buttons_grid@global.grid": {
+        "$grid_item": "server_form.grid_button"
+    },
+    "grid_button@starlib_pkg_button_templates.grid_item_template": {
+        "anchor_to": "center",
+        "anchor_from": "center",
+        "$GRID_ITEM_root_control": "starlib_pkg_button_templates.cubic_button",
+        "$GRID_ITEM_size": [
+            "16.6%",
+            100
+        ]
+    },
+    "landclaim_buttons_grid@global.grid": {
+        "$grid_item": "server_form.landclaim_grid"
+    },
+    "landclaim_grid@starlib_pkg_button_templates.grid_item_template": {
+        "anchor_to": "center",
+        "anchor_from": "center",
+        "$GRID_ITEM_root_control": "starlib_pkg_button_templates.cubic_button",
+        "$GRID_ITEM_size": [
+            "18.5%",
+            95
+        ]
+    },
+
+    "tpmenu_buttons_grid@global.grid": {
+        "$grid_item": "server_form.tp_menu_grid"
+    },
+    "tp_menu_grid@starlib_pkg_button_templates.grid_item_template": {
+        "anchor_to": "center",
+        "anchor_from": "center",
+        "$GRID_ITEM_root_control": "starlib_pkg_button_templates.cubic_button",
+        "$GRID_ITEM_size": [
+            "20%",
+            95
+        ]
+    },
+    "hubmenu_buttons_grid@global.grid": {
+        "$grid_item": "server_form.hub_menu_grid"
+    },
+    "hub_menu_grid@starlib_pkg_button_templates.grid_item_template": {
+        "anchor_to": "center",
+        "anchor_from": "center",
+        "$GRID_ITEM_root_control": "starlib_pkg_button_templates.cubic_button",
+        "$GRID_ITEM_size": [
+            "25%",
+            95
+        ]
+    },
+
+    "hubsettings_buttons_grid@global.grid": {
+        "$grid_item": "server_form.hub_settings_grid"
+    },
+    "hub_settings_grid@starlib_pkg_button_templates.grid_item_template": {
+        "anchor_to": "center",
+        "anchor_from": "center",
+        "$GRID_ITEM_root_control": "starlib_pkg_button_templates.cubic_button",
+        "$GRID_ITEM_size": [
+            "50%",
+            95
+        ]
+    },
+    "plotlist_buttons_grid@global.grid": {
+        "$grid_item": "server_form.plotlist_grid"
+    },
+    "plotlist_grid@starlib_pkg_button_templates.grid_item_template": {
+        "anchor_to": "center",
+        "anchor_from": "center",
+        "$GRID_ITEM_root_control": "server_form.shop_cubic_button",
+        "$GRID_ITEM_size": [
+            "18.5%",
+            100
+        ]
+    },
+    "shop_buttons_grid@global.grid": {
+        "$grid_item": "server_form.shop_grid"
+    },
+    "shop_grid@starlib_pkg_button_templates.grid_item_template": {
+        "anchor_to": "center",
+        "anchor_from": "center",
+        "$GRID_ITEM_root_control": "server_form.shop_cubic_button",
+        "$GRID_ITEM_size": [
+            "16.6%",
+            100
+        ]
+    },
+    "shop_cubic_button@starlib_pkg_button_templates.cubic_button": {
+        "type": "panel",
+        "size": "$CUBIC_BUTTON_size",
+        "$CUBIC_BUTTON_size|default": [
+            "100%",
+            "100%x"
+        ],
+        "controls": [
+            {
+                "root@starlib_pkg_button_common.common_button": {
+                }
+            },
+            {
+                "text@starlib_pkg_button_common.button_text": {
+                    "offset": [0, -5],
+                    "anchor_to": "bottom_middle",
+                    "anchor_from": "bottom_middle"
+                }
+            },
+            {
+                "image": {
+                    "type": "panel",
+                    "layer": 300,
+                    "size": ["100%c", "100%c"],
+                    "anchor_to": "top_middle",
+                    "anchor_from": "top_middle",
+                    "offset": [0, 13],
+                    "controls": [
+                        {
+                            "button_image@starlib_pkg_button_common.button_image": {
+                                "size": [32, 32],
+                                "bindings": [
+                                    {
+                                        "binding_name": "#form_button_texture",
+                                        "binding_name_override": "#texture",
+                                        "binding_type": "collection",
+                                        "binding_collection_name": "form_buttons"
+                                    },
+                                    {
+                                        "binding_name": "#form_button_texture_file_system",
+                                        "binding_name_override": "#texture_file_system",
+                                        "binding_type": "collection",
+                                        "binding_collection_name": "form_buttons"
+                                    },
+                                    {
+                                        "binding_type": "view",
+                                        "source_property_name": "((#texture - '§aaux_item§a') = #texture)",
+                                        "target_property_name": "#visible"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "item_block@beacon.item_renderer": {
+                                "size": [32, 32],
+                                "bindings": [
+                                    {
+                                        "binding_name": "#form_button_texture",
+                                        "binding_name_override": "#texture",
+                                        "binding_type": "collection",
+                                        "binding_collection_name": "form_buttons"
+                                    },
+                                    {
+                                        "binding_type": "view",
+                                        "source_property_name": "(not((#texture - '§aaux_item§a') = #texture))",
+                                        "target_property_name": "#visible"
+                                    },
+                                    {
+                                        "binding_type": "view",
+                                        "source_property_name": "((#texture - '§aaux_item§a') * 1)",
+                                        "target_property_name": "#item_id_aux"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "background": {
+                    "type": "image",
+                    "size": [
+                        "100%-10px",
+                        "50%"
+                    ],
+                    "layer": 299,
+
+                    "offset": [
+                        0,
+                        5
+                    ],
+                    "anchor_from": "top_middle",
+                    "anchor_to": "top_middle",
+                    "texture": "textures/ui/button_disabled"
+                }
+            }
+        ]
+    },
+    "header@style.image": {
+        "texture": "textures/ui/header"
+    },
+    "header_shop@style.image": {
+        "texture": "textures/ui/header",
+        "size": [
+            "100%",
+            32
+        ]
+    },
+    "title_preview_header@style.image": {
+        "anchor_to": "top_right",
+        "anchor_from": "top_right",
+        "texture": "textures/ui/header",
+        "size": [
+            190,
+            "default"
+        ]
+    },
+    "title_preview_title@starlib_pkg_screen_common.title_template": {
+        "offset": [
+            60,
+            10
+        ],
+        "anchor_to": "top_left",
+        "anchor_from": "top_left",
+        "text_alignment": "left"
+    },
+    "title_preview_background@style.image": {
+        "size": [
+            190,
+            "100%"
+        ],
+        "anchor_to": "top_right",
+        "anchor_from": "top_right"
+
+    },
+    "shop_title@starlib_pkg_screen_common.title_template": {
+        "text_alignment": "left",
+        "offset": [
+            10,
+            0
+        ]
+    },
+    "header_blue@style.image": {
+        "texture": "textures/ui/header_blue"
+    },
+    "header_green@style.image": {
+        "texture": "textures/ui/header_green"
+    },
+    "header_light_blue@style.image": {
+        "texture": "textures/ui/header_light_blue"
+    },
+    "header_red@style.image": {
+        "texture": "textures/ui/header_red"
+    },
+    "header_yellow@style.image": {
+        "texture": "textures/ui/header_yellow"
+    },
+    "header_purple@style.image": {
+        "texture": "textures/ui/header_purple"
+    },
+    "close_button@style.image": {
+        "texture": "textures/ui/button"
+    },
+    "hover@style.image": {
+        "texture": "textures/ui/button_hover"
+    },
+    "hover_none@style.image": {
+        "texture": "textures/blocks/none"
+    },
+    "form_text@starlib_pkg_screen_common.form_text_template": {
+        "size": [
+            "100% - 2px",
+            "default"
+        ]
+    },
+    "form_title_preview_text@starlib_pkg_screen_common.form_text_template": {
+        "size": [
+            "100% - 2px",
+            "default"
+        ],
+        "offset": [
+            0,
+            10
+        ],
+        "anchor_to": "top_center",
+        "anchor_from": "top_center",
+        "text_alignment": "center",
+        "layer": 1
+    },
+
+
+    "form_title_menu_text@starlib_pkg_screen_common.form_text_template": {
+        "size": [
+            0,
+            0
+        ]
+    },
+
+    "title_menu_header@style.image": {
+        "anchor_to": "top_right",
+        "anchor_from": "top_right",
+        "texture": "textures/ui/header",
+        "size": [
+            240,
+            "default"
+        ]
+    },
+    "title_menu_title@starlib_pkg_screen_common.title_template": {
+        "offset": [
+            55,
+            10
+        ],
+        "size": [
+            "100%",
+            "100%"
+        ],
+        "anchor_to": "top_left",
+        "anchor_from": "top_left",
+        "text_alignment": "left",
+        "controls": [
+            {
+                "body@style.label": {
+                    "type": "label",
+                    "anchor_from": "top_center",
+                    "anchor_to": "top_center",
+                    "layer": 31,
+                    "text": "#form_text",
+                    "text_alignment": "center",
+                    "offset": [
+                        -90,
+                        50
+                    ]
+                }
+            }
+        ]
+    },
+    "title_menu_background@style.image": {
+        "size": [
+            240,
+            "100%"
+        ],
+        "anchor_to": "top_right",
+        "anchor_from": "top_right"
+    }
+}

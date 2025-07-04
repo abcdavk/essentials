@@ -1,0 +1,40 @@
+{
+    "format_version": 2,
+    "header": {
+      "name": "Essentials",
+      "description": "",
+      "uuid": "79439a8a-3452-11f0-b448-2b035ac25ff2",
+      "version": [3, 0, 0],
+      "min_engine_version": [1, 21, 70]
+    },
+    "modules": [
+      {
+        "description": "Script resources",
+        "language": "javascript",
+        "type": "script",
+        "uuid": "73e83370-3452-11f0-bd0a-f74793fdc086",
+        "version": [1, 0, 0],
+        "entry": "scripts/main.js"
+      },
+      {
+        "type": "data",
+        "uuid": "6e25db5e-3452-11f0-98b8-779d2dde5810",
+        "version": [3, 0, 0]
+      }
+    ],
+    "dependencies": [
+      {
+        "uuid": "63df1dd6-3452-11f0-8684-8b06cfb759ec",
+        "version": [3, 0, 0]
+      },
+      {
+        "module_name": "@minecraft/server",
+        "version": "2.1.0-beta"
+      },
+      {
+        "module_name": "@minecraft/server-ui",
+        "version": "2.1.0-beta"
+      }
+    ]
+  }
+  
