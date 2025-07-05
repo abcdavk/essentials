@@ -53,6 +53,9 @@ export type Settings = {
   anti_fireball: boolean,
   anti_end_crystal: boolean,
   anti_wind_charge: boolean,
+  allow_interact_with_chest: boolean,
+  allow_interact_with_button: boolean,
+  allow_interact_with_door: boolean,
 }
 
 export type ProtectionData = {

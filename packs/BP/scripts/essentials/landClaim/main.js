@@ -55,7 +55,8 @@ function getPlayerProtectionData(player, origin) {
             isOwner,
             isFriend: !!matchedFriend,
             isInside,
-            allowList: matchedFriend ?? defaultPermission
+            allowList: matchedFriend ?? defaultPermission,
+            settings: protectionData.settings
         };
     }
     return {
@@ -73,7 +74,8 @@ function getPlayerProtectionData(player, origin) {
             allow_interact_armor_stand: true,
             allow_attack_animals: true,
             allow_attack_players: true
-        }
+        },
+        settings: undefined
     };
 }
 const playerCooldowns = new Map();
@@ -156,7 +158,7 @@ world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
     const { block, player, itemStack } = data;
     const id = block.typeId.toLowerCase();
     const isProtectionBlock = id.includes("lc:protection_block");
-    const { isOwner, allowList, isInside } = getPlayerProtectionData(player, block);
+    const { isOwner, allowList, isInside, settings, isFriend } = getPlayerProtectionData(player, block);
     if (itemStack && claimedAreaOnlyItems.includes(itemStack.typeId) && !isInside) {
         player.sendMessage("§cCan only be placed in claimed areas!");
         data.cancel = true;
@@ -165,34 +167,97 @@ world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
     if (!isOwner) {
         const protectionData = new Protection().get(block.center());
         const permissionChecks = [
-            { keywords: ["button"], permission: "allow_button" },
             { keywords: ["tnt"], permission: "allow_tnt" },
             { keywords: ["lever"], permission: "allow_lever" },
         ];
         let matched = false;
-        for (const check of permissionChecks) {
-            if (check.keywords.some(keyword => id.includes(keyword))) {
-                matched = true;
-                if (!allowList[check.permission]) {
+        if (id.includes("button")) {
+            matched = true;
+            if (isFriend) {
+                if (!allowList.allow_button && !settings?.allow_interact_with_button) {
+                    data.cancel = true;
+                    return;
+                }
+            }
+            else {
+                if (!settings?.allow_interact_with_button) {
                     data.cancel = true;
                     return;
                 }
             }
         }
+        else if (id.includes("door")) {
+            matched = true;
+            if (!isFriend && !settings?.allow_interact_with_door) {
+                data.cancel = true;
+                return;
+            }
+        }
+        else {
+            for (const check of permissionChecks) {
+                if (check.keywords.some(keyword => id.includes(keyword))) {
+                    matched = true;
+                    if (!allowList[check.permission]) {
+                        data.cancel = true;
+                        return;
+                    }
+                }
+            }
+        }
+        // if (isFriend) {
+        //   console.warn("friend")
+        //   if (id.includes("button")) {
+        //     if (!allowList.allow_button && !settings?.allow_interact_with_button) {
+        //       data.cancel = true;
+        //       return;
+        //     }
+        //   }
+        //   for (const check of permissionChecks) {
+        //     if (check.keywords.some(keyword => id.includes(keyword))) {
+        //       matched = true;
+        //       if (!allowList[check.permission]) {
+        //         data.cancel = true;
+        //         return;
+        //       }
+        //     }
+        //   }
+        // } else {
+        //   console.warn("not friend")
+        //   if (id.includes("button") && !settings?.allow_interact_with_button) {
+        //     data.cancel = true;
+        //     return;
+        //   }
+        // }
         if (!matched) {
             const generalInteractKeywords = [
                 "craft", "table", "anvil", "stand", "grind", "furnace", "smoker",
-                "chest", "barrel", "sign", "frame", "beacon", "dropper",
+                "barrel", "sign", "frame", "beacon", "dropper",
                 "dispenser", "hopper", "loom"
             ];
-            if (generalInteractKeywords.some(keyword => id.includes(keyword))) {
+            if (id.includes("chest")) {
+                if (isFriend) {
+                    // console.warn("friend")
+                    if (!allowList.allow_interact_with_block && !settings?.allow_interact_with_chest) {
+                        data.cancel = true;
+                        return;
+                    }
+                }
+                else {
+                    // console.warn("not friend")
+                    if (!settings?.allow_interact_with_chest) {
+                        data.cancel = true;
+                        return;
+                    }
+                }
+            }
+            else if (generalInteractKeywords.some(keyword => id.includes(keyword))) {
                 if (!allowList.allow_interact_with_block) {
                     data.cancel = true;
                     return;
                 }
             }
         }
-        if (protectionData.isSell && isProtectionBlock) {
+        if (protectionData?.isSell && isProtectionBlock) {
             const now = Date.now();
             const lastUsed = playerCooldowns.get(player.nameTag) ?? 0;
             if (now - lastUsed >= 260) {

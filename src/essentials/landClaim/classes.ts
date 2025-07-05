@@ -152,7 +152,10 @@ export class Protection {
         anti_hostile: false,
         anti_fireball: false,
         anti_wind_charge: false,
-        anti_end_crystal: false
+        anti_end_crystal: false,
+        allow_interact_with_chest: false,
+        allow_interact_with_button: false,
+        allow_interact_with_door: false
       },
       allowList: []
     }
@@ -225,8 +228,7 @@ export class Protection {
       });
     });
   }
-
-
+  
   set(blockLoc: Vector3, value: ProtectionData) {
     this.remove(blockLoc);
 

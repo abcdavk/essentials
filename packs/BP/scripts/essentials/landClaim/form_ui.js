@@ -94,10 +94,13 @@ export function handleSettingUI(player, block, dimension, protectionData) {
         .toggle("Anti Splash Potion", { defaultValue: protectionData.settings.anti_splash_potion, tooltip: "When enable, splash potions in the area will be removed." })
         .toggle("Anti Fireball", { defaultValue: protectionData.settings.anti_fireball, tooltip: "When enable, will prevent fireballs from exploding in the area." })
         .toggle("Anti Wind Charge", { defaultValue: protectionData.settings.anti_wind_charge, tooltip: "When enable, thrown wind charge in the area will be removed." })
-        .toggle("Anti End Crystal", { defaultValue: protectionData.settings.anti_end_crystal, tooltip: "When enable, active end crystal in the area will be removed." });
+        .toggle("Anti End Crystal", { defaultValue: protectionData.settings.anti_end_crystal, tooltip: "When enable, active end crystal in the area will be removed." })
+        .toggle("Allow Interact with Chest", { defaultValue: protectionData.settings.allow_interact_with_chest, tooltip: "When enable, other player will be able to open the chests in the plot." })
+        .toggle("Allow Interact with Button", { defaultValue: protectionData.settings.allow_interact_with_button, tooltip: "When enable, other player will be able to use button in the plot." })
+        .toggle("Allow Interact with Door", { defaultValue: protectionData.settings.allow_interact_with_door, tooltip: "When enable, other player will be able to open/close door in the plot." });
     form.show(player).then(res => {
         if (res.formValues) {
-            const [plotName, showBoundaries, anti_hostile, anti_tnt, anti_minecart_tnt, anti_creeper, anti_arrow, anti_splash_potion, anti_fireball, anti_wind_charge, anti_end_crystal] = res.formValues;
+            const [plotName, showBoundaries, anti_hostile, anti_tnt, anti_minecart_tnt, anti_creeper, anti_arrow, anti_splash_potion, anti_fireball, anti_wind_charge, anti_end_crystal, allow_interact_with_chest, allow_interact_with_button, allow_interact_with_door] = res.formValues;
             protectionData.settings = {
                 plotName,
                 showBoundaries,
@@ -109,7 +112,10 @@ export function handleSettingUI(player, block, dimension, protectionData) {
                 anti_splash_potion,
                 anti_fireball,
                 anti_wind_charge,
-                anti_end_crystal
+                anti_end_crystal,
+                allow_interact_with_chest,
+                allow_interact_with_button,
+                allow_interact_with_door
             };
             new Protection().set(block.center(), protectionData);
         }
