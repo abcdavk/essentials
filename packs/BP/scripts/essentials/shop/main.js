@@ -1,5 +1,5 @@
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
-import { itemTypeIdToName, formatNumber, convertTypeIdToAuxIcon } from "../../utils";
+import { itemTypeIdToName, formatNumber, convertTypeIdToAuxIcon, getActualName } from "../../utils";
 import { shopRegistry } from "./config";
 import { Money } from "../money";
 import { TitleData } from "../title/main";
@@ -21,9 +21,9 @@ export function shopCategory(player) {
 function handleTitleLevel(player, title) {
     const category = title.category;
     const titleList = title.titleList;
-    const ownedTitle = new TitleData().getArray(player.nameTag);
+    const ownedTitle = new TitleData().getArray(getActualName(player.nameTag));
     let form = new ActionFormData()
-        .title(`§f§2§2§r§l§0Buy ${category}\n§r§2$${formatNumber(new Money().get(player.nameTag))}`);
+        .title(`§f§2§2§r§l§0Buy ${category}\n§r§2$${formatNumber(new Money().get(getActualName(player.nameTag)))}`);
     for (let i = 0; i < titleList.length; i++) {
         let { name, price, texture } = titleList[i];
         let hasPurchased = !ownedTitle.includes(name) ? `§r${name}\n§a$${price}` : `§m§0§0§r${name}\n§7Purchased`;
@@ -39,14 +39,14 @@ function handleBuyTitle(player, title) {
     const { name, price, color } = title;
     let form = new ActionFormData()
         .title(`§f§3§0§r§0Buy §l${name}§r§0`)
-        .body(`§l${color}${name} §r${player.nameTag}\n\n\n\n\n\n\n\n\n`)
+        .body(`§l${color}${name} §r${getActualName(player.nameTag)}\n\n\n\n\n\n\n\n\n`)
         .button(`Buy for §l$${formatNumber(price)}`)
         .button(`Cancel`);
     form.show(player).then(res => {
         if (res.selection === 0) {
-            const isCanceled = new Money().remove(player.nameTag, price);
+            const isCanceled = new Money().remove(getActualName(player.nameTag), price);
             if (!isCanceled) {
-                new TitleData().add(player.nameTag, name);
+                new TitleData().add(getActualName(player.nameTag), name);
                 player.sendMessage(`Successfully purchased §b${name}§r for §a$${price}§r`);
             }
             else {
@@ -59,7 +59,7 @@ function handleShopList(player, shop) {
     const category = shop.category;
     const itemList = shop.itemList;
     let form = new ActionFormData()
-        .title(`§f§2§2§r§l§0Buy ${category}\n§r§2$${formatNumber(new Money().get(player.nameTag))}`);
+        .title(`§f§2§2§r§l§0Buy ${category}\n§r§2$${formatNumber(new Money().get(getActualName(player.nameTag)))}`);
     for (let i = 0; i < itemList.length; i++) {
         let { typeId, price, per } = itemList[i];
         let itemName = itemTypeIdToName(typeId);
@@ -87,7 +87,7 @@ function handleBuyItem(player, item) {
         let amount = parseInt(res.formValues[0]);
         if (!isNaN(amount) && amount > 0) {
             const totalPrice = price * amount;
-            const isCanceled = new Money().remove(player.nameTag, totalPrice);
+            const isCanceled = new Money().remove(getActualName(player.nameTag), totalPrice);
             if (!isCanceled) {
                 amount = per === undefined ? amount : amount * per;
                 player.sendMessage(`Successfully purchased §e${amount}x§r §b${parseItemName}§r for §a$${totalPrice.toFixed(2)}§r`);

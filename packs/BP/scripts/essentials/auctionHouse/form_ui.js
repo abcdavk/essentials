@@ -1,7 +1,7 @@
 import { EntityComponentTypes, EquipmentSlot, ItemComponentTypes, system, world } from "@minecraft/server";
 import { ActionFormData, MessageFormData, ModalFormData } from "@minecraft/server-ui";
 import { AuctionHouse } from "./main";
-import { convertTypeIdToAuxIcon, formatNumber, itemTypeIdToName, truncateWithDots } from "../../utils";
+import { convertTypeIdToAuxIcon, formatNumber, getActualName, itemTypeIdToName, truncateWithDots } from "../../utils";
 import { bannedItems } from "./config";
 import { Money } from "../money";
 import { QIDB } from "../../QIDB";
@@ -16,9 +16,9 @@ export function auctionHouseSeller(player) {
     const auctionData = auctionHouse.getAll();
     const auctionItems = [];
     let form = new ActionFormData()
-        .title(`§f§2§2§r§l§0AuctionHouse\n§r§2$${formatNumber(new Money().get(player.nameTag))}`);
+        .title(`§f§2§2§r§l§0AuctionHouse\n§r§2$${formatNumber(new Money().get(getActualName(player.nameTag)))}`);
     for (const auction of auctionData) {
-        if (auction.nameTag !== player.nameTag)
+        if (auction.nameTag !== getActualName(player.nameTag))
             continue;
         for (const entry of auction.auctionList) {
             const { id, amount, price } = entry;
@@ -63,11 +63,11 @@ function auctionHouseEdit(player, soldItem, auctionSold) {
         }
         if (remove) {
             player.dimension.spawnItem(soldItem, player.location);
-            auctionHouse.remove(player.nameTag, auctionSold.id);
+            auctionHouse.remove(getActualName(player.nameTag), auctionSold.id);
         }
         else if (newPrice !== auctionSold.price) {
-            auctionHouse.remove(player.nameTag, auctionSold.id);
-            auctionHouse.add(player.nameTag, newPrice, auctionSold.amount, soldItem);
+            auctionHouse.remove(getActualName(player.nameTag), auctionSold.id);
+            auctionHouse.add(getActualName(player.nameTag), newPrice, auctionSold.amount, soldItem);
             auctionHouseSeller(player);
         }
     });
@@ -76,7 +76,7 @@ export function auctionHouseCatalog(player) {
     const auctionData = new AuctionHouse().getAll();
     const auctionItems = [];
     let form = new ActionFormData()
-        .title(`§f§2§2§r§l§0AuctionHouse\n§r§2$${formatNumber(new Money().get(player.nameTag))}`);
+        .title(`§f§2§2§r§l§0AuctionHouse\n§r§2$${formatNumber(new Money().get(getActualName(player.nameTag)))}`);
     auctionData.forEach(auction => {
         for (let i = 0; i < auction.auctionList.length; i++) {
             const { id, amount, price } = auction.auctionList[i];
@@ -113,7 +113,7 @@ function auctionHouseBuy(player, seller, soldItem, auctionSold) {
     }
     const enchantInfo = soldItemEnchantments.length > 0 ? enchantList.join('\n') + '\n' : '';
     const lineSpace = "\n".repeat(8 - soldItemEnchantments.length);
-    const buyButton = player.nameTag === seller ? `§m§0§0§7Buy for §l$${formatNumber(price)}` : `Buy for §l$${formatNumber(price)}`;
+    const buyButton = getActualName(player.nameTag) === seller ? `§m§0§0§7Buy for §l$${formatNumber(price)}` : `Buy for §l$${formatNumber(price)}`;
     let form = new ActionFormData()
         .title(`§f§0§1§r§0Buy §l${itemName}`)
         .body(`§7Item: §b${itemName}§7\n${enchantInfo}§7\nAmount: §e${amount}§7\nPrice: §a$${price}§7\n\nExpire at: §e${new Date(expire).toDateString()}§7\nSeller: §e${seller}${lineSpace}`)
@@ -121,11 +121,11 @@ function auctionHouseBuy(player, seller, soldItem, auctionSold) {
     form.show(player).then(res => {
         if (res.selection === 0) {
             if (new AuctionHouse().checkAvailability(seller, id)) {
-                const isCanceled = new Money().remove(player.nameTag, price);
+                const isCanceled = new Money().remove(getActualName(player.nameTag), price);
                 if (!isCanceled) {
                     new AuctionHouse().remove(seller, id);
                     new Money().add(seller, price);
-                    player.runCommand(`tellraw ${seller} {"rawtext":[{"text":"§b${player.nameTag}§r buys §b${amount}x ${itemName}§r from you for §a$${price}"}]}`);
+                    player.runCommand(`tellraw ${seller} {"rawtext":[{"text":"§b${getActualName(player.nameTag)}§r buys §b${amount}x ${itemName}§r from you for §a$${price}"}]}`);
                     player.sendMessage(`Successfully purchased §e${amount}x§r §b${itemName}§r for §a$${price.toFixed(2)}§r`);
                     player.dimension.spawnItem(soldItem, player.location);
                 }
@@ -200,7 +200,7 @@ function auctionHouseSellOption(player, itemStack) {
     form.show(player).then(res => {
         if (res.formValues === undefined)
             return;
-        // console.log(`${player.nameTag} sell ${itemStack.typeId}`)
+        // console.log(`${getActualName(player.nameTag)} sell ${itemStack.typeId}`)
         let [amount, price] = res.formValues;
         price = parseFloat(price);
         amount = parseFloat(amount);
@@ -224,7 +224,7 @@ function auctionHouseSellOption(player, itemStack) {
                     }
                     let soldItem = itemStack;
                     soldItem.amount = amount;
-                    new AuctionHouse().add(player.nameTag, price, amount, soldItem);
+                    new AuctionHouse().add(getActualName(player.nameTag), price, amount, soldItem);
                     player.sendMessage(`Successfully sold §e${amount}x§r §b${itemName}§r for §a$${price}§r`);
                 }
             });

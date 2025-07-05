@@ -1,6 +1,6 @@
 import { world, Player, Block, Vector3 } from "@minecraft/server";
 import { AllowList, AlowListEnum, ExpiredDate, ProtectionData } from "../../interfaces";
-import { generateRandomID } from "../../utils";
+import { generateRandomID, getActualName } from "../../utils";
 export class Expired {
   private key = "lc:expired";
 
@@ -118,7 +118,7 @@ export class Protection {
   private getProtectionData(): ProtectionData[] {
     const rawData = world.getDynamicProperty("lc:protection_data") as string;
     let data = JSON.parse(rawData) as ProtectionData[];
-    data = data.filter(d => d && typeof d === "object" && d.nameTag);
+    data = data.filter(d => d && typeof d === "object" && getActualName(d.nameTag));
 
     return data;
   }

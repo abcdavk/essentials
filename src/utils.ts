@@ -16,6 +16,10 @@ export function itemTypeIdToName(itemtype: string): string {
     .join(" ");
 }
 
+export function getActualName(playerNameTag: string): string {
+  return playerNameTag.split("§r")[0]
+}
+
 export function formatNumber(num: number): string {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

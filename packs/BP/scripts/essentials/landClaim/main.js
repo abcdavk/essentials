@@ -4,16 +4,16 @@ import { ActionFormData } from "@minecraft/server-ui";
 import { Expired, Protection } from "./classes";
 import { handleBuyPlotUI } from "./form_ui";
 import { claimedAreaOnlyBlocks, claimedAreaOnlyItems } from "./config";
-import { getRadius1 } from "../../utils";
+import { getActualName, getRadius1 } from "../../utils";
 // ================Begin-Initialization================
 world.afterEvents.playerSpawn.subscribe(({ player }) => {
-    console.log("spawning ", player.nameTag);
+    console.log("spawning ", getActualName(player.nameTag));
     if (world.getDynamicProperty("lc:protection_data") === undefined) {
         world.setDynamicProperty("lc:protection_data", JSON.stringify([]));
         world.setDynamicProperty("lc:expired", JSON.stringify([]));
     }
     ;
-    new Expired().update(player.nameTag);
+    new Expired().update(getActualName(player.nameTag));
 });
 // ================End-Initialization================
 function getPlayerProtectionData(player, origin) {
@@ -35,11 +35,11 @@ function getPlayerProtectionData(player, origin) {
                 pz >= cz - half && pz < cz + half;
         if (!isInside)
             continue;
-        const isOwner = protectionData.nameTag === player.nameTag;
+        const isOwner = protectionData.nameTag === getActualName(player.nameTag);
         const allowList = protectionData.allowList ?? [];
-        const matchedFriend = allowList.find(friend => friend.nameTag === player.nameTag);
+        const matchedFriend = allowList.find(friend => friend.nameTag === getActualName(player.nameTag));
         const defaultPermission = {
-            nameTag: player.nameTag,
+            nameTag: getActualName(player.nameTag),
             allow_place_block: false,
             allow_break_block: false,
             allow_interact_with_block: false,
@@ -110,7 +110,7 @@ world.beforeEvents.playerPlaceBlock.subscribe((data) => {
         data.cancel = true;
         return;
     }
-    const expiredLength = new Expired().getPlayerExpiredLength(player.nameTag);
+    const expiredLength = new Expired().getPlayerExpiredLength(getActualName(player.nameTag));
     if (isProtectionBlock) {
         if (expiredLength <= 10) {
             const newCenter = block.center();
@@ -119,7 +119,7 @@ world.beforeEvents.playerPlaceBlock.subscribe((data) => {
             const nonOwnerAddition = isOwner ? 0 : 12;
             const newHalf = protectionSize / 2;
             const overlapFound = allProtections.some((p) => {
-                const isSameOwner = p.nameTag === player.nameTag;
+                const isSameOwner = getActualName(p.nameTag) === getActualName(player.nameTag);
                 const existingHalf = p.protectionSize / 2;
                 const distanceX = Math.abs(newCenter.x - p.location.x);
                 const distanceZ = Math.abs(newCenter.z - p.location.z);
@@ -204,30 +204,6 @@ world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
                 }
             }
         }
-        // if (isFriend) {
-        //   console.warn("friend")
-        //   if (id.includes("button")) {
-        //     if (!allowList.allow_button && !settings?.allow_interact_with_button) {
-        //       data.cancel = true;
-        //       return;
-        //     }
-        //   }
-        //   for (const check of permissionChecks) {
-        //     if (check.keywords.some(keyword => id.includes(keyword))) {
-        //       matched = true;
-        //       if (!allowList[check.permission]) {
-        //         data.cancel = true;
-        //         return;
-        //       }
-        //     }
-        //   }
-        // } else {
-        //   console.warn("not friend")
-        //   if (id.includes("button") && !settings?.allow_interact_with_button) {
-        //     data.cancel = true;
-        //     return;
-        //   }
-        // }
         if (!matched) {
             const generalInteractKeywords = [
                 "craft", "table", "anvil", "stand", "grind", "furnace", "smoker",
@@ -259,18 +235,18 @@ world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
         }
         if (protectionData?.isSell && isProtectionBlock) {
             const now = Date.now();
-            const lastUsed = playerCooldowns.get(player.nameTag) ?? 0;
+            const lastUsed = playerCooldowns.get(getActualName(player.nameTag)) ?? 0;
             if (now - lastUsed >= 260) {
-                playerCooldowns.set(player.nameTag, now);
+                playerCooldowns.set(getActualName(player.nameTag), now);
                 system.run(() => handleBuyPlotUI(player, block, block.dimension, protectionData));
             }
         }
     }
     const now = Date.now();
-    const lastUsed = playerCooldowns.get(player.nameTag) ?? 0;
+    const lastUsed = playerCooldowns.get(getActualName(player.nameTag)) ?? 0;
     if (now - lastUsed < 260)
         return;
-    playerCooldowns.set(player.nameTag, now);
+    playerCooldowns.set(getActualName(player.nameTag), now);
     if (isProtectionBlock) {
         system.run(() => handleInteractProtectionBlock(data));
     }
@@ -397,10 +373,10 @@ system.runInterval(() => {
                 pz >= cz - half && pz < cz + half;
             if (!isInside)
                 continue;
-            isOwner = protectionData.nameTag === player.nameTag;
+            isOwner = protectionData.nameTag === getActualName(player.nameTag);
             isInProtectedArea = true;
-            allowAttackPlayers = protectionData.allowList.find(f => f.nameTag === player.nameTag)?.allow_attack_players ?? false;
-            allowAttackAnimals = protectionData.allowList.find(f => f.nameTag === player.nameTag)?.allow_attack_animals ?? false;
+            allowAttackPlayers = protectionData.allowList.find(f => f.nameTag === getActualName(player.nameTag))?.allow_attack_players ?? false;
+            allowAttackAnimals = protectionData.allowList.find(f => f.nameTag === getActualName(player.nameTag))?.allow_attack_animals ?? false;
             antiHostile = protectionData.settings.anti_hostile ?? false;
             break;
         }

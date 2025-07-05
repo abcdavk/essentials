@@ -5,7 +5,7 @@ import { ActionFormData } from "@minecraft/server-ui";
 import { Expired, Protection } from "./classes";
 import { handleBuyPlotUI } from "./form_ui";
 import { claimedAreaOnlyBlocks, claimedAreaOnlyItems } from "./config";
-import { getRadius1 } from "../../utils";
+import { getActualName, getRadius1 } from "../../utils";
 
 
 
@@ -16,12 +16,12 @@ import { getRadius1 } from "../../utils";
 world.afterEvents.playerSpawn.subscribe(({
   player
 }) => {
-  console.log("spawning ", player.nameTag);
+  console.log("spawning ", getActualName(player.nameTag));
   if (world.getDynamicProperty("lc:protection_data") === undefined) {
     world.setDynamicProperty("lc:protection_data", JSON.stringify([]));
     world.setDynamicProperty("lc:expired", JSON.stringify([]));
   };
-  new Expired().update(player.nameTag);
+  new Expired().update(getActualName(player.nameTag));
 });
 
 // ================End-Initialization================
@@ -47,13 +47,13 @@ function getPlayerProtectionData(player: Player, origin: Block | Entity) {
 
     if (!isInside) continue;
 
-    const isOwner = protectionData.nameTag === player.nameTag;
+    const isOwner = protectionData.nameTag === getActualName(player.nameTag);
     const allowList = protectionData.allowList ?? [];
 
-    const matchedFriend = allowList.find(friend => friend.nameTag === player.nameTag);
+    const matchedFriend = allowList.find(friend => friend.nameTag === getActualName(player.nameTag));
 
     const defaultPermission: AllowList = {
-      nameTag: player.nameTag,
+      nameTag: getActualName(player.nameTag),
       allow_place_block: false,
       allow_break_block: false,
       allow_interact_with_block: false,
@@ -139,7 +139,7 @@ world.beforeEvents.playerPlaceBlock.subscribe((data) => {
     return;
   }
 
-  const expiredLength = new Expired().getPlayerExpiredLength(player.nameTag);
+  const expiredLength = new Expired().getPlayerExpiredLength(getActualName(player.nameTag));
 
   if (isProtectionBlock) {
     if (expiredLength <= 10) {
@@ -152,7 +152,7 @@ world.beforeEvents.playerPlaceBlock.subscribe((data) => {
       const newHalf = protectionSize / 2;
 
       const overlapFound = allProtections.some((p: ProtectionData) => {
-        const isSameOwner = p.nameTag === player.nameTag;
+        const isSameOwner = getActualName(p.nameTag) === getActualName(player.nameTag);
 
         const existingHalf = p.protectionSize / 2;
         const distanceX = Math.abs(newCenter.x - p.location.x);
@@ -287,20 +287,20 @@ world.beforeEvents.playerInteractWithBlock.subscribe((data) => {
 
     if (protectionData?.isSell && isProtectionBlock) {
       const now = Date.now();
-      const lastUsed = playerCooldowns.get(player.nameTag) ?? 0;
+      const lastUsed = playerCooldowns.get(getActualName(player.nameTag)) ?? 0;
 
       if (now - lastUsed >= 260) {
-        playerCooldowns.set(player.nameTag, now);
+        playerCooldowns.set(getActualName(player.nameTag), now);
         system.run(() => handleBuyPlotUI(player, block, block.dimension, protectionData));
       }
     }
   }
 
   const now = Date.now();
-  const lastUsed = playerCooldowns.get(player.nameTag) ?? 0;
+  const lastUsed = playerCooldowns.get(getActualName(player.nameTag)) ?? 0;
   if (now - lastUsed < 260) return;
 
-  playerCooldowns.set(player.nameTag, now);
+  playerCooldowns.set(getActualName(player.nameTag), now);
   if (isProtectionBlock) {
     system.run(() => handleInteractProtectionBlock(data));
   }
@@ -452,12 +452,12 @@ system.runInterval(() => {
         
       if (!isInside) continue;
       
-      isOwner = protectionData.nameTag === player.nameTag;
+      isOwner = protectionData.nameTag === getActualName(player.nameTag);
       
       isInProtectedArea = true;
 
-      allowAttackPlayers = protectionData.allowList.find(f => f.nameTag === player.nameTag)?.allow_attack_players ?? false;
-      allowAttackAnimals = protectionData.allowList.find(f => f.nameTag === player.nameTag)?.allow_attack_animals ?? false;
+      allowAttackPlayers = protectionData.allowList.find(f => f.nameTag === getActualName(player.nameTag))?.allow_attack_players ?? false;
+      allowAttackAnimals = protectionData.allowList.find(f => f.nameTag === getActualName(player.nameTag))?.allow_attack_animals ?? false;
       antiHostile = protectionData.settings.anti_hostile ?? false;
       break;
     }

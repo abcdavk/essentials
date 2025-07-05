@@ -2,6 +2,7 @@ import { world } from "@minecraft/server";
 import { Protection } from "./classes";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { Money } from "../money";
+import { getActualName } from "../../utils";
 export function handleSellPlotUI(player, block, dimension, protectionData) {
     const { x, y, z } = protectionData.location;
     let form = new ModalFormData()
@@ -11,7 +12,7 @@ export function handleSellPlotUI(player, block, dimension, protectionData) {
     form.show(player).then(res => {
         if (res.formValues === undefined)
             return;
-        // console.log(`${player.nameTag} sell ${itemStack.typeId}`)
+        // console.log(`${getActualName(player.nameTag)} sell ${itemStack.typeId}`)
         let [toggleSell, price] = res.formValues;
         price = parseFloat(price);
         if (!isNaN(price) && price >= 0) {
@@ -65,12 +66,12 @@ export function handleBuyPlotUI(player, block, dimension, protectionData) {
         if (res.selection === undefined)
             return;
         if (res.selection === 1) {
-            const isCanceled = new Money().remove(player.nameTag, sellPrice);
+            const isCanceled = new Money().remove(getActualName(player.nameTag), sellPrice);
             if (!isCanceled) {
                 new Money().add(protectionData.nameTag, sellPrice);
                 player.sendMessage(`Successfully purchased plot at §e${x.toFixed(0)} ${y.toFixed(0)} ${z.toFixed(0)}§r for §a$${sellPrice}§r`);
-                player.runCommand(`tellraw ${protectionData.nameTag} {"rawtext":[{"text":"§b${player.nameTag}§r buys your plot at §e${x.toFixed(0)} ${y.toFixed(0)} ${z.toFixed(0)}§r for §a$${sellPrice}§r"}]}`);
-                protectionData.nameTag = player.nameTag;
+                player.runCommand(`tellraw ${protectionData.nameTag} {"rawtext":[{"text":"§b${getActualName(player.nameTag)}§r buys your plot at §e${x.toFixed(0)} ${y.toFixed(0)} ${z.toFixed(0)}§r for §a$${sellPrice}§r"}]}`);
+                protectionData.nameTag = getActualName(player.nameTag);
                 protectionData.allowList = [];
                 protectionData.isSell = false;
                 new Protection().set(block.center(), protectionData);
@@ -125,8 +126,8 @@ export function handleAddFriendUI(player, block, dimension, protectionData) {
     const players = world.getPlayers();
     let playerList = ["None"];
     players.forEach(p => {
-        if (p.nameTag !== player.nameTag)
-            playerList.push(p.nameTag);
+        if (getActualName(p.nameTag) !== getActualName(player.nameTag))
+            playerList.push(getActualName(p.nameTag));
     });
     let form = new ModalFormData()
         .title("Invite")

@@ -1,14 +1,14 @@
 import { system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 import { allJobs } from "./config";
-import { calculateNextValue } from "../../utils";
+import { calculateNextValue, getActualName } from "../../utils";
 export function jobMenuMainUI(player) {
     let playerJob = player.getDynamicProperty("job:currentJob");
     let form = new ActionFormData()
         .title("§f§0§1§r§l§0Job Menu");
     if (player.hasTag("job:hasEmployed") && playerJob !== undefined) {
         let jobTitle = allJobs[playerJob].title;
-        form.body(`Hi ${player.nameTag}!\nYour job is §e${jobTitle}\n\n`);
+        form.body(`Hi ${getActualName(player.nameTag)}!\nYour job is §e${jobTitle}\n\n`);
         form.button("Show All Jobs");
         form.button("Job Status");
     }

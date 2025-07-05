@@ -1,5 +1,6 @@
 import { world } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
+import { getActualName } from "../utils";
 export function moneySetup() {
     if (!world.getDynamicProperty("ess:money")) {
         world.setDynamicProperty("ess:money", JSON.stringify([]));
@@ -8,11 +9,11 @@ export function moneySetup() {
 export function playerSendMoney(player) {
     const players = world.getPlayers();
     const moneyData = new Money();
-    const currentMoney = moneyData.get(player.nameTag);
+    const currentMoney = moneyData.get(getActualName(player.nameTag));
     const playerList = ["None"];
     players.forEach(p => {
-        if (p.nameTag !== player.nameTag) {
-            playerList.push(p.nameTag);
+        if (getActualName(p.nameTag) !== getActualName(player.nameTag)) {
+            playerList.push(getActualName(p.nameTag));
         }
     });
     const form = new ModalFormData()
@@ -47,7 +48,7 @@ export function playerSendMoney(player) {
             player.sendMessage("§cPlease select or type a player's name.");
             return;
         }
-        if (targetName === player.nameTag) {
+        if (targetName === getActualName(player.nameTag)) {
             player.sendMessage("§cYou can't send money to yourself.");
             return;
         }
@@ -55,9 +56,9 @@ export function playerSendMoney(player) {
             player.sendMessage("§cYou don't have enough money.");
             return;
         }
-        moneyData.remove(player.nameTag, amount);
+        moneyData.remove(getActualName(player.nameTag), amount);
         moneyData.add(targetName, amount);
-        player.runCommand(`tellraw ${targetName} {"rawtext":[{"text":"§b${player.nameTag}§r sent you §a$${amount}"}]}`);
+        player.runCommand(`tellraw ${targetName} {"rawtext":[{"text":"§b${getActualName(player.nameTag)}§r sent you §a$${amount}"}]}`);
         player.sendMessage(`Sent §a$${amount}§r to §b${targetName}`);
     });
 }

@@ -2,6 +2,7 @@ import { Player, world } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { Money } from "../money";
 import { QIDB } from "../../QIDB";
+import { getActualName } from "../../utils";
 
 export function adminMenuMainUI(player: Player) {
   let has_database_init = world.getDynamicProperty("ess:has_database_init") ?? false;
@@ -49,8 +50,8 @@ function adminMenuSetMoney(player: Player) {
   let playerList: string[] = ["None"]
 
   players.forEach(p => {
-    // if (p.nameTag !== player.nameTag) 
-    playerList.push(p.nameTag);
+    // if (getActualName(p.nameTag) !== getActualName(player.nameTag)) 
+    playerList.push(getActualName(p.nameTag));
   })
 
   let form = new ModalFormData()
@@ -83,8 +84,8 @@ function adminMenuAddMoney(player: Player) {
   let playerList: string[] = ["None"]
 
   players.forEach(p => {
-    // if (p.nameTag !== player.nameTag) 
-    playerList.push(p.nameTag);
+    // if (getActualName(p.nameTag) !== getActualName(player.nameTag)) 
+    playerList.push(getActualName(p.nameTag));
   })
 
   let form = new ModalFormData()
@@ -117,8 +118,8 @@ function adminMenuRemoveMoney(player: Player) {
   let playerList: string[] = ["None"]
 
   players.forEach(p => {
-    // if (p.nameTag !== player.nameTag) 
-    playerList.push(p.nameTag);
+    // if (getActualName(p.nameTag) !== getActualName(player.nameTag)) 
+    playerList.push(getActualName(p.nameTag));
   })
 
   let form = new ModalFormData()

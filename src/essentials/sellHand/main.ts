@@ -1,7 +1,7 @@
 import { EntityComponentTypes, EquipmentSlot, ItemStack, Player, system } from "@minecraft/server";
 import { bannedItems } from "../auctionHouse/config";
 import { ActionFormData, MessageFormData, ModalFormData } from "@minecraft/server-ui";
-import { itemTypeIdToName } from "../../utils";
+import { getActualName, itemTypeIdToName } from "../../utils";
 import { itemSelldefaultPrice, itemSellPriceRegistry } from "./config";
 import { Money } from "../money";
 
@@ -35,7 +35,7 @@ function sellAllItem(player: Player) {
     .button2('Yes')
     .show(player).then(res => {
     if (res.selection === 1) {
-      new Money().add(player.nameTag, totalPrice);
+      new Money().add(getActualName(player.nameTag), totalPrice);
 
       for (let i = 0; i < inv.inventorySize; i++) {
         const itemInv = con.getItem(i)
@@ -124,7 +124,7 @@ function sellHandOption(player: Player, itemStack: ItemStack) {
     .submitButton(`Sell §l${itemName}`);
   form.show(player).then(res => {
     if (res.formValues === undefined) return;
-    // console.log(`${player.nameTag} sell ${itemStack.typeId}`)
+    // console.log(`${getActualName(player.nameTag)} sell ${itemStack.typeId}`)
     let amount = res.formValues[1];
     amount = parseFloat(amount as string);
     price = amount * price;
@@ -136,7 +136,7 @@ function sellHandOption(player: Player, itemStack: ItemStack) {
       .show(player).then(res => {
       if (res.selection === 0) sellHandOption(player, itemStack);
       if (res.selection === 1) {
-        new Money().add(player.nameTag, price);
+        new Money().add(getActualName(player.nameTag), price);
 
         player.runCommand(`clear @s ${itemStack.typeId} 0 ${amount}`);
         player.sendMessage(`Successfully sold §e${amount}x§r §b${itemName}§r for §a$${price}§r`);

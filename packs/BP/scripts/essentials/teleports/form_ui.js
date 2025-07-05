@@ -1,14 +1,14 @@
 import { system, world } from "@minecraft/server";
 import { Protection } from "../landClaim/classes";
 import { ActionFormData, MessageFormData, ModalFormData } from "@minecraft/server-ui";
-import { convertTypeIdToAuxIcon } from "../../utils";
+import { convertTypeIdToAuxIcon, getActualName } from "../../utils";
 import { ACTeleport } from "./main";
 import { AlowListEnum } from "../../interfaces";
 export function teleportPlot(player) {
     if (!player.hasTag("ess:tp_cooldown")) {
         const protectionData = new Protection();
-        let playerPlot = protectionData.getAll(player.nameTag);
-        playerPlot = playerPlot.concat(protectionData.getByPermission(AlowListEnum.allow_teleport_to_plot, player.nameTag));
+        let playerPlot = protectionData.getAll(getActualName(player.nameTag));
+        playerPlot = playerPlot.concat(protectionData.getByPermission(AlowListEnum.allow_teleport_to_plot, getActualName(player.nameTag)));
         // console.warn(JSON.stringify(playerPlot))
         let form = new ActionFormData()
             .title(`§f§2§3§r§l§0Teleport to Plot`);
@@ -37,8 +37,8 @@ export function teleportAsk(player) {
     const players = world.getPlayers();
     let playerList = ["None"];
     players.forEach(p => {
-        if (p.nameTag !== player.nameTag) {
-            playerList.push(p.nameTag);
+        if (getActualName(p.nameTag) !== getActualName(player.nameTag)) {
+            playerList.push(getActualName(p.nameTag));
         }
     });
     let form = new ModalFormData()
@@ -60,23 +60,23 @@ export function teleportAsk(player) {
             player.sendMessage("§cPlease use only dropdown or text field, not both.");
             return;
         }
-        const targetPlayer = players.find(p => p.nameTag === targetName);
+        const targetPlayer = players.find(p => getActualName(p.nameTag) === targetName);
         if (!targetPlayer) {
             player.sendMessage(`§cPlayer "${targetName}" not found.`);
             return;
         }
         else {
             teleport.add(targetName, {
-                nameTag: player.nameTag,
+                nameTag: getActualName(player.nameTag),
                 location: targetPlayer.location,
             });
             player.sendMessage(`§eRequest sent to bring §a${targetName} §eto you.`);
-            targetPlayer.sendMessage(`§b${player.nameTag} §ewants to teleport you to them.`);
+            targetPlayer.sendMessage(`§b${getActualName(player.nameTag)} §ewants to teleport you to them.`);
         }
     });
 }
 export function teleportRequest(player) {
-    const requestList = teleport.get(player.nameTag);
+    const requestList = teleport.get(getActualName(player.nameTag));
     let form = new ActionFormData()
         .title(`§f§2§3§r§l§0Teleport Request`);
     for (const req of requestList) {
@@ -96,15 +96,15 @@ export function teleportRequest(player) {
             .button2('Accept')
             .show(player).then(res => {
             if (res.selection === 0) {
-                player.runCommand(`tellraw ${requestName} {"rawtext":[{"text":"§b${player.nameTag}§c rejected your teleport request."}]}`);
-                teleport.remove(player.nameTag, { nameTag: requestName, location: requestLoc });
+                player.runCommand(`tellraw ${requestName} {"rawtext":[{"text":"§b${getActualName(player.nameTag)}§c rejected your teleport request."}]}`);
+                teleport.remove(getActualName(player.nameTag), { nameTag: requestName, location: requestLoc });
             }
             if (res.selection === 1) {
                 const { x, y, z } = requestLoc;
-                player.runCommand(`tellraw ${requestName} {"rawtext":[{"text":"§b${player.nameTag}§a accepted your teleport request."}]}`);
+                player.runCommand(`tellraw ${requestName} {"rawtext":[{"text":"§b${getActualName(player.nameTag)}§a accepted your teleport request."}]}`);
                 player.runCommand(`tp ${requestName} ${x} ${y} ${z}`);
                 player.addTag("ess:tp_cooldown");
-                teleport.remove(player.nameTag, { nameTag: requestName, location: requestLoc });
+                teleport.remove(getActualName(player.nameTag), { nameTag: requestName, location: requestLoc });
                 system.runTimeout(() => {
                     player.removeTag("ess:tp_cooldown");
                 }, 20 * 10);

@@ -2,6 +2,7 @@ import { world } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { Money } from "../money";
 import { QIDB } from "../../QIDB";
+import { getActualName } from "../../utils";
 export function adminMenuMainUI(player) {
     let has_database_init = world.getDynamicProperty("ess:has_database_init") ?? false;
     let has_privilage = player.hasTag("has_privilage");
@@ -51,8 +52,8 @@ function adminMenuSetMoney(player) {
     const players = world.getPlayers();
     let playerList = ["None"];
     players.forEach(p => {
-        // if (p.nameTag !== player.nameTag) 
-        playerList.push(p.nameTag);
+        // if (getActualName(p.nameTag) !== getActualName(player.nameTag)) 
+        playerList.push(getActualName(p.nameTag));
     });
     let form = new ModalFormData()
         .title("Set Money")
@@ -84,8 +85,8 @@ function adminMenuAddMoney(player) {
     const players = world.getPlayers();
     let playerList = ["None"];
     players.forEach(p => {
-        // if (p.nameTag !== player.nameTag) 
-        playerList.push(p.nameTag);
+        // if (getActualName(p.nameTag) !== getActualName(player.nameTag)) 
+        playerList.push(getActualName(p.nameTag));
     });
     let form = new ModalFormData()
         .title("Add Money")
@@ -117,8 +118,8 @@ function adminMenuRemoveMoney(player) {
     const players = world.getPlayers();
     let playerList = ["None"];
     players.forEach(p => {
-        // if (p.nameTag !== player.nameTag) 
-        playerList.push(p.nameTag);
+        // if (getActualName(p.nameTag) !== getActualName(player.nameTag)) 
+        playerList.push(getActualName(p.nameTag));
     });
     let form = new ModalFormData()
         .title("Remove Money")

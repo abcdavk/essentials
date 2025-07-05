@@ -1,5 +1,5 @@
 import { EntityComponentTypes, Player, system, world, Vector3, Entity, EntityDamageCause, EntityDamageSource, BlockPermutation } from "@minecraft/server";
-import { calculateNextValue } from "../../utils";
+import { calculateNextValue, getActualName } from "../../utils";
 import { BlockOptions, KillEntityOptions } from "../../interfaces"
 import { allJobs, fishingLoots } from "./config";
 import { Money } from "../money";
@@ -10,7 +10,7 @@ export function jobMenuSetup(player: Player) {
   if (!player.hasTag("job:setup")) {
     player.addTag("job:setup");
 
-    new Money().init(player.nameTag);
+    new Money().init(getActualName(player.nameTag));
 
     player.setDynamicProperty("job:currentJob");
     allJobs.forEach(job => {
@@ -25,7 +25,7 @@ let lastHookLocation: Vector3 | null = null;
 
 let moneyAddMessage = "";
 export function jobMenuInterval(player: Player) {
-    let playerMoney = new Money().get(player.nameTag);
+    let playerMoney = new Money().get(getActualName(player.nameTag));
     let playerJob = player.getDynamicProperty("job:currentJob") as number;
 
     if (playerJob !== undefined) {
@@ -56,12 +56,12 @@ export function jobMenuInterval(player: Player) {
 
 export function giveReward(player: Player, reward: number) {
     let playerJob = player.getDynamicProperty("job:currentJob") as number;
-    let playerMoney = new Money().get(player.nameTag);
+    let playerMoney = new Money().get(getActualName(player.nameTag));
     let jobTitle = allJobs[playerJob].title;
     let jobProgress = player.getDynamicProperty(`job:${jobTitle}_progress`) as number;
     // player.setDynamicProperty("job:money", parseFloat((playerMoney + reward).toFixed(2)));
 
-    new Money().add(player.nameTag, parseFloat((reward).toFixed(2)))
+    new Money().add(getActualName(player.nameTag), parseFloat((reward).toFixed(2)))
 
     player.setDynamicProperty(`job:${jobTitle}_progress`, jobProgress + 1);
     player.setDynamicProperty("job:moneyAdd", reward);

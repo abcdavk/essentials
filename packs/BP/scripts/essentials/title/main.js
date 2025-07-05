@@ -1,5 +1,6 @@
 import { world } from "@minecraft/server";
 import { titleRegistry } from "./config";
+import { getActualName } from "../../utils";
 export function titleSetup() {
     if (!world.getDynamicProperty("ess:title")) {
         world.setDynamicProperty("ess:title", JSON.stringify([]));
@@ -7,17 +8,17 @@ export function titleSetup() {
 }
 export function playerTitleSetup(player) {
     if (!player.hasTag("ess:title_setup")) {
-        new TitleData().init(player.nameTag);
+        new TitleData().init(getActualName(player.nameTag));
         player.addTag("ess:title_setup");
     }
 }
 export function titleOnChat(data) {
     let { message, sender: player } = data;
-    let titleUsed = new TitleData().get(player.nameTag);
+    let titleUsed = new TitleData().get(getActualName(player.nameTag));
     if (titleUsed !== "") {
         data.cancel = true;
         const color = titleRegistry.filter(title => title.name === titleUsed)[0].color;
-        world.sendMessage(`<§l${color}${titleUsed}§r ${player.nameTag}>§r ${message}`);
+        world.sendMessage(`<§l${color}${titleUsed}§r ${getActualName(player.nameTag)}>§r ${message}`);
     }
 }
 export class TitleData {
@@ -38,22 +39,22 @@ export class TitleData {
     }
     init(playerNameTag) {
         const data = this.getTitlesData();
-        if (data.find((d) => d.nameTag === playerNameTag))
+        if (data.find((d) => getActualName(d.nameTag) === playerNameTag))
             return;
         data.push({ nameTag: playerNameTag, enabled: "", titleList: [] });
         this.saveTitlesData(data);
     }
     get(playerNameTag) {
-        const playerData = this.getTitlesData().find((d) => d.nameTag === playerNameTag);
+        const playerData = this.getTitlesData().find((d) => getActualName(d.nameTag) === playerNameTag);
         return playerData?.enabled ?? "";
     }
     getArray(playerNameTag) {
-        const playerData = this.getTitlesData().find((d) => d.nameTag === playerNameTag);
+        const playerData = this.getTitlesData().find((d) => getActualName(d.nameTag) === playerNameTag);
         return playerData?.titleList ?? [];
     }
     set(playerNameTag, titleToSet) {
         const data = this.getTitlesData();
-        const index = data.findIndex((d) => d.nameTag === playerNameTag);
+        const index = data.findIndex((d) => getActualName(d.nameTag) === playerNameTag);
         if (index === -1)
             return;
         data[index].enabled = titleToSet;
@@ -61,7 +62,7 @@ export class TitleData {
     }
     add(playerNameTag, titleToAdd) {
         const data = this.getTitlesData();
-        const index = data.findIndex((d) => d.nameTag === playerNameTag);
+        const index = data.findIndex((d) => getActualName(d.nameTag) === playerNameTag);
         if (index === -1)
             return;
         if (!data[index].titleList.includes(titleToAdd)) {

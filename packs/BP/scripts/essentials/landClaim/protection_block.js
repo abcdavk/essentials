@@ -2,7 +2,7 @@ import { ItemStack, system, world } from "@minecraft/server";
 import { Expired, Protection } from "./classes";
 import { ActionFormData } from "@minecraft/server-ui";
 import { handleAddFriendUI, handleRemoveFriendUI, handleSellPlotUI, handleSettingUI, handleShowAllFriendUI } from "./form_ui";
-import { generateRandomID, getRadius1 } from "../../utils";
+import { generateRandomID, getActualName, getRadius1 } from "../../utils";
 export function handlePlaceProtectionBlock(data) {
     let { dimension, permutationToPlace, block, player, } = data;
     const nearbyBlocks = getRadius1(block.location);
@@ -20,8 +20,8 @@ export function handlePlaceProtectionBlock(data) {
     }
     const newId = generateRandomID();
     const protectionSize = parseInt(permutationToPlace.type.id.split("_")[2]);
-    new Protection().init(player.nameTag, block.center(), protectionSize, newId);
-    new Expired().init(player.nameTag, block.center());
+    new Protection().init(getActualName(player.nameTag), block.center(), protectionSize, newId);
+    new Expired().init(getActualName(player.nameTag), block.center());
     let protectionEntity = dimension.spawnEntity("lc:protection_block", block.center());
     protectionEntity.setDynamicProperty("lc:entity_id", newId);
     console.log("Protection size: ", protectionSize);
@@ -42,7 +42,7 @@ export function handleBreakProtectionBlock(data) {
         const protectionData = protection.get(block.center());
         if (protectionData === undefined)
             return;
-        if (protectionData.nameTag === player.nameTag) {
+        if (protectionData.nameTag === getActualName(player.nameTag)) {
             protection.remove(block.center());
             expired.remove(block.center());
             protectionEntity.remove();
@@ -53,7 +53,7 @@ export function handleInteractProtectionBlock(data) {
     let { block, player, } = data;
     const dimension = world.getDimension(player.dimension.id);
     const protectionData = new Protection().get(block.center());
-    if (protectionData.nameTag === player.nameTag) {
+    if (protectionData.nameTag === getActualName(player.nameTag)) {
         if (player.hasTag("ess:inAuctionSell"))
             return;
         let form = new ActionFormData()

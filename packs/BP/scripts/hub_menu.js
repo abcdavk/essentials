@@ -8,6 +8,9 @@ import { playerSendMoney } from "./essentials/money";
 import { sellInvMenu } from "./essentials/sellHand/main";
 import { teleportRandom, teleportSpawn } from "./essentials/teleports/main";
 import { teleportAsk, teleportPlot, teleportRequest } from "./essentials/teleports/form_ui";
+import { getActualName } from "./utils";
+export const PVP_ON_ICON = "";
+export const PVP_OFF_ICON = "";
 export function hubMenuSetup(player) {
     const equip = player.getComponent(EntityComponentTypes.Equippable);
     if (!player.hasTag("ess:hub_menu_give")) {
@@ -16,6 +19,11 @@ export function hubMenuSetup(player) {
         itemStack.lockMode = ItemLockMode.inventory;
         equip?.setEquipment(EquipmentSlot.Mainhand, itemStack);
         player.addTag("ess:hub_menu_give");
+        player.removeTag("pvp_enabled");
+        player.addTag("keep_inventory");
+        player.addTag("deny_attack_player");
+        player.sendMessage("§aToggle pvp is disabled. You can enable it in the hub menu!");
+        player.nameTag = `${getActualName(player.nameTag)}§r${PVP_OFF_ICON}`;
     }
 }
 export function hubMenu(player, itemStack) {
@@ -88,16 +96,19 @@ function hubSettings(player) {
                 player.addTag("pvp_enabled");
                 player.removeTag("keep_inventory");
                 player.removeTag("deny_attack_player");
-                player.sendMessage("§aToggle PVP enabled");
+                player.sendMessage("§cToggle PVP enabled. Keep inventory is inactive!");
             }
             else {
-                player.removeTag("pvp_enabled");
-                player.addTag("keep_inventory");
-                player.addTag("deny_attack_player");
-                player.sendMessage("§cToggle PVP disabled");
+                disablePvp(player);
+                player.sendMessage("§aToggle PVP disabled. Keep inventory is active!");
             }
         }
         if (res.selection === 1)
             changeTitleMenu(player);
     });
+}
+function disablePvp(player) {
+    player.removeTag("pvp_enabled");
+    player.addTag("keep_inventory");
+    player.addTag("deny_attack_player");
 }

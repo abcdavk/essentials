@@ -1,4 +1,5 @@
 import { world } from "@minecraft/server";
+import { getActualName } from "../../utils";
 export class Expired {
     constructor() {
         this.key = "lc:expired";
@@ -97,7 +98,7 @@ export class Protection {
     getProtectionData() {
         const rawData = world.getDynamicProperty("lc:protection_data");
         let data = JSON.parse(rawData);
-        data = data.filter(d => d && typeof d === "object" && d.nameTag);
+        data = data.filter(d => d && typeof d === "object" && getActualName(d.nameTag));
         return data;
     }
     // debug(playerName: string) {

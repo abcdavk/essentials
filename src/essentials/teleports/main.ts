@@ -1,4 +1,5 @@
 import { Player, system, Vector3, world } from "@minecraft/server";
+import { getActualName } from "../../utils";
 
 export function teleportSetup() {
   if (!world.getDynamicProperty("ess:ac_teleport")) {
@@ -8,7 +9,7 @@ export function teleportSetup() {
 
 export function teleportPlayerSetup(player: Player) {
   if (!player.hasTag("ess:tp_setup")) {
-    new ACTeleport().init(player.nameTag);
+    new ACTeleport().init(getActualName(player.nameTag));
   }
 }
 
@@ -70,7 +71,7 @@ export class ACTeleport {
 
   init(playerNameTag: string) {
     const data = this.getWorldAuctionData();
-    if (!data.find(d => d.nameTag === playerNameTag)) {
+    if (!data.find(d => getActualName(d.nameTag) === playerNameTag)) {
       data.push({ nameTag: playerNameTag, requestList: [] });
       this.saveWorldAuctionData(data);
     }
@@ -78,7 +79,7 @@ export class ACTeleport {
 
   set(playerNameTag: string, requestList: { nameTag: string; location: Vector3 }[]) {
     const data = this.getWorldAuctionData();
-    const index = data.findIndex(d => d.nameTag === playerNameTag);
+    const index = data.findIndex(d => getActualName(d.nameTag) === playerNameTag);
 
     if (index !== -1) {
       data[index].requestList = requestList;
@@ -91,13 +92,13 @@ export class ACTeleport {
 
   get(playerNameTag: string) {
     const data = this.getWorldAuctionData();
-    const found = data.find(d => d.nameTag === playerNameTag);
+    const found = data.find(d => getActualName(d.nameTag) === playerNameTag);
     return found?.requestList ?? [];
   }
 
   add(playerNameTag: string, request: { nameTag: string; location: Vector3 }) {
     const data = this.getWorldAuctionData();
-    let playerData = data.find(d => d.nameTag === playerNameTag);
+    let playerData = data.find(d => getActualName(d.nameTag) === playerNameTag);
 
     if (!playerData) {
       playerData = { nameTag: playerNameTag, requestList: [] };
@@ -119,11 +120,11 @@ export class ACTeleport {
 
   remove(playerNameTag: string, target: { nameTag: string; location: Vector3 }) {
     const data = this.getWorldAuctionData();
-    const playerData = data.find(d => d.nameTag === playerNameTag);
+    const playerData = data.find(d => getActualName(d.nameTag) === playerNameTag);
 
     if (playerData) {
       playerData.requestList = playerData.requestList.filter(r =>
-        !(r.nameTag === target.nameTag &&
+        !(getActualName(r.nameTag) === target.nameTag &&
           r.location.x === target.location.x &&
           r.location.y === target.location.y &&
           r.location.z === target.location.z)

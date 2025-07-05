@@ -1,6 +1,6 @@
 import { system, world } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
-import { generateRandomID } from "../../utils";
+import { generateRandomID, getActualName } from "../../utils";
 import { QIDB } from "../../QIDB";
 import { auctionHouseCatalog, auctionHouseSeller, auctionHouseSellItem } from "./form_ui";
 let Inventories;
@@ -30,7 +30,7 @@ export function auctionHousePlayerSetup(player) {
     player.removeTag("ess:inAuctionSell");
     if (!player.hasTag("ess:auction_setup")) {
         player.addTag("ess:auction_setup");
-        new AuctionHouse().init(player.nameTag);
+        new AuctionHouse().init(getActualName(player.nameTag));
     }
 }
 export function auctionHouseMainUI(player) {
@@ -38,14 +38,14 @@ export function auctionHouseMainUI(player) {
         .title('§f§0§1§r§l§0Select Category')
         .button("Auction House")
         .button("Sell To Auction");
-    if (new AuctionHouse().get(player.nameTag).length > 0) {
+    if (new AuctionHouse().get(getActualName(player.nameTag)).length > 0) {
         form.button("Your Auction");
     }
     form.show(player).then(res => {
         if (res.selection === 0)
             auctionHouseCatalog(player);
         if (res.selection === 1) {
-            if (new AuctionHouse().get(player.nameTag).length <= 10) {
+            if (new AuctionHouse().get(getActualName(player.nameTag)).length <= 10) {
                 auctionHouseSellItem(player);
             }
             else {
@@ -76,7 +76,7 @@ export class AuctionHouse {
     }
     init(playerNameTag) {
         const data = this.getWorldAuctionData();
-        if (!data.find(d => d.nameTag === playerNameTag)) {
+        if (!data.find(d => getActualName(d.nameTag) === playerNameTag)) {
             data.push({ nameTag: playerNameTag, auctionList: [] });
             this.saveWorldAuctionData(data);
         }
@@ -93,7 +93,7 @@ export class AuctionHouse {
         return soldItems;
     }
     get(playerNameTag) {
-        const playerData = this.getWorldAuctionData().find(d => d.nameTag === playerNameTag);
+        const playerData = this.getWorldAuctionData().find(d => getActualName(d.nameTag) === playerNameTag);
         return playerData?.auctionList ?? [];
     }
     add(playerNameTag, price, amount, itemStack) {
@@ -101,7 +101,7 @@ export class AuctionHouse {
         const twoWeeks = 13 * 24 * 60 * 60 * 1000;
         const expiredAt = now + twoWeeks;
         const data = this.getWorldAuctionData();
-        const index = data.findIndex(d => d.nameTag === playerNameTag);
+        const index = data.findIndex(d => getActualName(d.nameTag) === playerNameTag);
         if (index === -1)
             return;
         const newId = generateRandomID();
@@ -118,7 +118,7 @@ export class AuctionHouse {
     }
     remove(playerNameTag, id) {
         const data = this.getWorldAuctionData();
-        const index = data.findIndex(d => d.nameTag === playerNameTag);
+        const index = data.findIndex(d => getActualName(d.nameTag) === playerNameTag);
         if (index === -1)
             return;
         data[index].auctionList = data[index].auctionList.filter(auction => auction.id !== id);
@@ -129,7 +129,7 @@ export class AuctionHouse {
     }
     set(playerNameTag, newAuctionList) {
         const data = this.getWorldAuctionData();
-        const index = data.findIndex(d => d.nameTag === playerNameTag);
+        const index = data.findIndex(d => getActualName(d.nameTag) === playerNameTag);
         if (index === -1)
             return;
         data[index].auctionList = newAuctionList;
@@ -137,7 +137,7 @@ export class AuctionHouse {
     }
     checkAvailability(playerNameTag, id) {
         const data = this.getWorldAuctionData();
-        const playerData = data.find(d => d.nameTag === playerNameTag);
+        const playerData = data.find(d => getActualName(d.nameTag) === playerNameTag);
         if (!playerData)
             return false;
         return playerData.auctionList.some(auction => auction.id === id) && Inventories.has(id);
