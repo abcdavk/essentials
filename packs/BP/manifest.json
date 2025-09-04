@@ -4,7 +4,7 @@
       "name": "Essentials",
       "description": "",
       "uuid": "79439a8a-3452-11f0-b448-2b035ac25ff2",
-      "version": [3, 0, 0],
+      "version": [3, 1, 0],
       "min_engine_version": [1, 21, 70]
     },
     "modules": [
@@ -19,17 +19,17 @@
       {
         "type": "data",
         "uuid": "6e25db5e-3452-11f0-98b8-779d2dde5810",
-        "version": [3, 0, 0]
+        "version": [3, 1, 0]
       }
     ],
     "dependencies": [
       {
         "uuid": "63df1dd6-3452-11f0-8684-8b06cfb759ec",
-        "version": [3, 0, 0]
+        "version": [3, 1, 0]
       },
       {
         "module_name": "@minecraft/server",
-        "version": "2.1.0-beta"
+        "version": "2.2.0-beta"
       },
       {
         "module_name": "@minecraft/server-ui",

@@ -1,5 +1,5 @@
 import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus, EntityComponentTypes, EquipmentSlot, system, world } from "@minecraft/server";
-import { hubMenu, hubMenuSetup } from "./hub_menu";
+import { hubMenu, hubMenuSetup, PVP_OFF_ICON, PVP_ON_ICON } from "./hub_menu";
 import { jobMenuBlockBreakHandler, jobMenuFishingHandler, jobMenuInterval, jobMenuKillHandler, jobMenuSetup } from "./essentials/jobMenu/main";
 import { moneySetup } from "./essentials/money";
 import { adminMenu } from "./essentials/adminMenu/main";
@@ -9,6 +9,10 @@ import { teleportPlayerSetup, teleportSetup } from "./essentials/teleports/main"
 import { claimedAreaOnlyBlocks, claimedAreaOnlyItems } from "./essentials/landClaim/config";
 import { adminAddPrivilage, adminMenuInit, adminMenuMainUI } from "./essentials/adminMenu/form_ui";
 import { limitSpawnEntity } from "./essentials/entitySpawnLimit/main";
+import { antiFleeMain, antiFleeTimer } from "./essentials/pvp/main";
+import { bountyBoardPlayerSetup } from "./essentials/bounty/main";
+import { getActualName } from "./utils";
+import { beforeDieHunger } from "./essentials/keepHunger/main";
 world.afterEvents.worldLoad.subscribe(() => {
     moneySetup();
     titleSetup();
@@ -17,12 +21,24 @@ world.afterEvents.worldLoad.subscribe(() => {
 world.beforeEvents.chatSend.subscribe((data) => {
     titleOnChat(data);
 });
+world.beforeEvents.playerPlaceBlock.subscribe((event) => {
+    const { permutationToPlace, player } = event;
+    const bannedBlocks = [
+        "minecraft:slime",
+        "minecraft:honey_block"
+    ];
+    if (bannedBlocks.includes(permutationToPlace.type.id) && player.commandPermissionLevel < CommandPermissionLevel.Admin) {
+        event.cancel = true;
+    }
+});
 world.afterEvents.playerSpawn.subscribe(({ player }) => {
     playerTitleSetup(player);
     jobMenuSetup(player);
     auctionHousePlayerSetup(player);
     hubMenuSetup(player);
     teleportPlayerSetup(player);
+    bountyBoardPlayerSetup(player);
+    player.nameTag = `${getActualName(player.nameTag)}§r${player.hasTag("pvp_enabled") ? PVP_ON_ICON : PVP_OFF_ICON}`;
 });
 // world.beforeEvents.playerLeave.subscribe(({ player }) => {
 // });
@@ -39,6 +55,12 @@ world.afterEvents.entitySpawn.subscribe(({ entity }) => {
 });
 world.afterEvents.entityDie.subscribe(({ damageSource, deadEntity }) => {
     jobMenuKillHandler(damageSource, deadEntity);
+    if (deadEntity.typeId === "minecraft:player")
+        beforeDieHunger(deadEntity);
+});
+world.afterEvents.entityHitEntity.subscribe(({ damagingEntity, hitEntity }) => {
+    if (hitEntity.typeId === "minecraft:player")
+        antiFleeMain(damagingEntity, hitEntity);
 });
 system.runInterval(() => {
     world.getPlayers().forEach(player => {
@@ -46,6 +68,7 @@ system.runInterval(() => {
         jobMenuInterval(player);
     });
     auctionHouseInterval();
+    antiFleeTimer();
 });
 // Custom command registry
 system.beforeEvents.startup.subscribe(({ customCommandRegistry: ccr }) => {

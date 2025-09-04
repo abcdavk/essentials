@@ -107,3 +107,16 @@ export type AuctionData = {
   nameTag: string,
   auctionList: AuctionSold[]
 }
+
+export type BountyList = {
+  id: string,
+  price: number,
+  amount: number,
+  expire: number,
+  completed: boolean
+}
+
+export type BountyData = {
+  nameTag: string,
+  bountyList: BountyList[]
+}

@@ -28,11 +28,10 @@ export function teleportSpawn(player: Player) {
 export function teleportRandom(player: Player) {
   if (!player.hasTag("ess:tp_cooldown")) {
     player.addTag("ess:tp_cooldown");
-    
     const randomLoc: Vector3 = {
-      x: Math.floor(Math.random() * 100000),
+      x: Math.floor(Math.random() * (9000 - 2000) + 2000),
       y: 72,
-      z: Math.floor(Math.random() * 100000),
+      z: Math.floor(Math.random() * (9000 - 2000) + 2000),
     }
 
     console.warn(player.tryTeleport(randomLoc));

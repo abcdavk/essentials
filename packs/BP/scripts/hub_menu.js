@@ -1,4 +1,4 @@
-import { EntityComponentTypes, EquipmentSlot, ItemLockMode, ItemStack } from "@minecraft/server";
+import { EntityComponentTypes, EquipmentSlot, ItemLockMode, ItemStack, world } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 import { jobMenuMainUI } from "./essentials/jobMenu/form_ui";
 import { shopCategory } from "./essentials/shop/main";
@@ -9,6 +9,7 @@ import { sellInvMenu } from "./essentials/sellHand/main";
 import { teleportRandom, teleportSpawn } from "./essentials/teleports/main";
 import { teleportAsk, teleportPlot, teleportRequest } from "./essentials/teleports/form_ui";
 import { getActualName } from "./utils";
+import { bountyBoardMainUI } from "./essentials/bounty/form_ui";
 export const PVP_ON_ICON = "";
 export const PVP_OFF_ICON = "";
 export function hubMenuSetup(player) {
@@ -23,10 +24,14 @@ export function hubMenuSetup(player) {
         player.addTag("keep_inventory");
         player.addTag("deny_attack_player");
         player.sendMessage("§aToggle pvp is disabled. You can enable it in the hub menu!");
-        player.nameTag = `${getActualName(player.nameTag)}§r${PVP_OFF_ICON}`;
     }
 }
 export function hubMenu(player, itemStack) {
+    if (player.getDynamicProperty("anti_flee:timer") !== undefined) {
+        player.sendMessage(`§cYou are in pvp, can't open hub menu!`);
+        return;
+    }
+    ;
     if (itemStack.typeId === "dave:hub_menu") {
         let form = new ActionFormData()
             .title('§f§2§0§r§l§0Hub Menu')
@@ -69,12 +74,17 @@ function teleportMenu(player) {
 }
 function shopMenu(player) {
     let form = new ActionFormData()
-        .title('§f§2§0§r§l§0Shop')
+        .title('§f§2§5§r§l§0Shop')
         .button('', 'textures/ui/new_ui/shop/S1')
         .button('', 'textures/ui/new_ui/shop/S2')
         .button('', 'textures/ui/new_ui/shop/S3')
-        .button('', 'textures/ui/new_ui/shop/S4');
+        .button('', 'textures/ui/new_ui/shop/S4')
+        .button('', 'textures/ui/new_ui/shop/S5');
     form.show(player).then(res => {
+        if (!world.getDynamicProperty("ess:has_database_init")) {
+            player.sendMessage("§cCannot use this feature because the database has not been initialized. Run the command §e'/ess:init'§c then run §e'/reload'");
+            return;
+        }
         if (res.selection === 0)
             shopCategory(player);
         if (res.selection === 1)
@@ -83,6 +93,8 @@ function shopMenu(player) {
             playerSendMoney(player);
         if (res.selection === 3)
             sellInvMenu(player);
+        if (res.selection === 4)
+            bountyBoardMainUI(player);
     });
 }
 function hubSettings(player) {
@@ -92,15 +104,17 @@ function hubSettings(player) {
         .button('', 'textures/ui/new_ui/settings/E2');
     form.show(player).then(res => {
         if (res.selection === 0) {
-            if (player.hasTag("deny_attack_player")) {
+            if (!player.hasTag("pvp_enabled")) {
                 player.addTag("pvp_enabled");
                 player.removeTag("keep_inventory");
                 player.removeTag("deny_attack_player");
-                player.sendMessage("§cToggle PVP enabled. Keep inventory is inactive!");
+                player.sendMessage("§cToggle PVP enabled. Keep inventory is disabled!");
+                player.nameTag = `${getActualName(player.nameTag)}§r${PVP_ON_ICON}`;
             }
             else {
                 disablePvp(player);
-                player.sendMessage("§aToggle PVP disabled. Keep inventory is active!");
+                player.sendMessage("§aToggle PVP disabled. Keep inventory is enabled!");
+                player.nameTag = `${getActualName(player.nameTag)}§r${PVP_OFF_ICON}`;
             }
         }
         if (res.selection === 1)

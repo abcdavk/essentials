@@ -19,6 +19,7 @@ let moneyAddMessage = "";
 export function jobMenuInterval(player) {
     let playerMoney = new Money().get(getActualName(player.nameTag));
     let playerJob = player.getDynamicProperty("job:currentJob");
+    let pvpText = player.hasTag("pvp_enabled") ? `§cPVP: ON§r` : `§aPVP: OFF§r`;
     if (playerJob !== undefined) {
         let { initialRequirement, requirementStep, } = allJobs[playerJob];
         let jobTitle = allJobs[playerJob].title;
@@ -32,10 +33,10 @@ export function jobMenuInterval(player) {
         }
         let moneyAdd = player.getDynamicProperty("job:moneyAdd");
         moneyAddMessage = moneyAdd === undefined ? '' : ` §a+$${moneyAdd}`;
-        player.onScreenDisplay.setActionBar(`§eMoney: §r$${playerMoney.toFixed(2)}${moneyAddMessage}\n\n§cStatus:\n §vJob: §r${jobTitle}\n §bLevel: §r${jobLevel}\n §uProgress: §r${jobProgress}/${jobRequirement}`);
+        player.onScreenDisplay.setActionBar(`${pvpText}\n§eMoney: §r$${playerMoney.toFixed(2)}${moneyAddMessage}\n\n§cStatus:\n §vJob: §r${jobTitle}\n §bLevel: §r${jobLevel}\n §uProgress: §r${jobProgress}/${jobRequirement}`);
     }
     else {
-        player.onScreenDisplay.setActionBar(`§eMoney: §r$${playerMoney.toFixed(2)}`);
+        player.onScreenDisplay.setActionBar(`${pvpText}\n§eMoney: §r$${playerMoney.toFixed(2)}`);
     }
 }
 export function giveReward(player, reward) {

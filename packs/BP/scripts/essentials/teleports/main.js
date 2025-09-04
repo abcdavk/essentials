@@ -26,9 +26,9 @@ export function teleportRandom(player) {
     if (!player.hasTag("ess:tp_cooldown")) {
         player.addTag("ess:tp_cooldown");
         const randomLoc = {
-            x: Math.floor(Math.random() * 100000),
+            x: Math.floor(Math.random() * (9000 - 2000) + 2000),
             y: 72,
-            z: Math.floor(Math.random() * 100000),
+            z: Math.floor(Math.random() * (9000 - 2000) + 2000),
         };
         console.warn(player.tryTeleport(randomLoc));
         system.runTimeout(() => {

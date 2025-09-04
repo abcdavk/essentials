@@ -30,7 +30,11 @@ export function generateRandomID(length = 8) {
 export function truncateWithDots(text, maxLength = 12) {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 }
-const number_of_1_16_100_items = 2;
+/**
+ * n = how many new items added
+ * x = 2 + n
+ */
+const number_of_1_16_100_items = 2; // x
 export function convertTypeIdToAuxIcon(typeId, enchanted = false) {
     const ID = typeIdToID.get(typeId);
     if (ID !== undefined) {

@@ -38,7 +38,11 @@ export function truncateWithDots(text: string, maxLength: number = 12): string {
   return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 }
 
-const number_of_1_16_100_items = 2;
+/**
+ * n = how many new items added
+ * x = 2 + n
+ */
+const number_of_1_16_100_items = 2; // x
 
 export function convertTypeIdToAuxIcon(typeId: string, enchanted: boolean = false): string {
   const ID = typeIdToID.get(typeId);

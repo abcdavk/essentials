@@ -10,7 +10,7 @@ import { AuctionSold } from "../../interfaces";
 let Inventories: QIDB
 
 system.run(() => {
-  if (world.getDynamicProperty("ess:has_database_init") === true) {
+  if (world.getDynamicProperty("ess:has_database_init")) {
     Inventories = new QIDB('auction_house', 10, 270);
   }
 });

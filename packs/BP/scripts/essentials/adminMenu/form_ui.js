@@ -1,4 +1,4 @@
-import { world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { Money } from "../money";
 import { QIDB } from "../../QIDB";
@@ -40,7 +40,10 @@ export function adminAddPrivilage(player) {
 }
 export function adminMenuInit(player) {
     if (!world.getDynamicProperty("ess:has_database_init")) {
-        let Inventories = new QIDB('auction_house', 10, 270);
+        system.run(() => {
+            new QIDB('auction_house', 10, 270);
+            new QIDB('bounty_board', 10, 270);
+        });
         player.sendMessage("Database created.");
         world.setDynamicProperty("ess:has_database_init", true);
     }

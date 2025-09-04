@@ -116,10 +116,10 @@ world.beforeEvents.playerPlaceBlock.subscribe((data) => {
             const newCenter = block.center();
             const allProtections = new Protection().getAll();
             const protectionSize = parseInt(blockPlaced.type.id.split("_")[2]);
-            const nonOwnerAddition = isOwner ? 0 : 12;
             const newHalf = protectionSize / 2;
             const overlapFound = allProtections.some((p) => {
                 const isSameOwner = getActualName(p.nameTag) === getActualName(player.nameTag);
+                const nonOwnerAddition = isSameOwner ? 0 : 15;
                 const existingHalf = p.protectionSize / 2;
                 const distanceX = Math.abs(newCenter.x - p.location.x);
                 const distanceZ = Math.abs(newCenter.z - p.location.z);
